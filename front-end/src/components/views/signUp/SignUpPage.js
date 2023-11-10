@@ -43,17 +43,23 @@ const Layer = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
 `;
-const IdInputWrapper = styled.div`
+const CheckInputWrapper = styled.div`
     width: 80%;
     height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
     padding-right: 1rem;
     @media screen and (max-width: 1024px) {
         width: 70%;
     }
 `;
-const IdCheckBtnWrapper = styled.div`
+const CheckIBtnWrapper = styled.div`
     width: 20%;
     height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
     padding-left: 1rem;
     @media screen and (max-width: 1024px) {
         width: 30%;
@@ -75,6 +81,16 @@ const BirthInputWrapper = styled.div`
         width: 50%;
     }
 `;
+const SelectPhoneNumberWrapper = styled.div`
+    width: 20%;
+    height: 100%;
+    padding-right: 1rem;
+`;
+const InputPhoneNumberWrapper = styled.div`
+    width: 80%;
+    height: 100%;
+    padding-left: 1rem;
+`;
 const Inputs = styled.div`
     width: 100%;
     height: 100%;
@@ -91,7 +107,7 @@ export default function SignUpPage() {
                 <Logo></Logo>
                 <Form>
                     <Layer>
-                        <IdInputWrapper>
+                        <CheckInputWrapper>
                             <Inputs>
                                 <InputWithLabel01
                                     name="userId"
@@ -100,8 +116,8 @@ export default function SignUpPage() {
                                     placeHolder="Put the ID"
                                 ></InputWithLabel01>
                             </Inputs>
-                        </IdInputWrapper>
-                        <IdCheckBtnWrapper>
+                        </CheckInputWrapper>
+                        <CheckIBtnWrapper>
                             <BtnWrapper>
                                 <RectangleBtnWithLabel01
                                     label="&nbsp;"
@@ -109,7 +125,7 @@ export default function SignUpPage() {
                                     content="Check"
                                 ></RectangleBtnWithLabel01>
                             </BtnWrapper>
-                        </IdCheckBtnWrapper>
+                        </CheckIBtnWrapper>
                     </Layer>
                     <Layer>
                         <Inputs>
@@ -154,20 +170,39 @@ export default function SignUpPage() {
                         </BirthInputWrapper>
                     </Layer>
                     <Layer>
-                        <Inputs>
-                            <InputWithLabel01
-                                name="phoneNumber"
-                                label="PhoneNumber"
-                                inputType="text"
-                                placeHolder="Put the phoneNumber"
-                            ></InputWithLabel01>
-                        </Inputs>
+                        <CheckInputWrapper>
+                            <SelectPhoneNumberWrapper>
+                                <InputWithLabel01
+                                    name="phoneNumber"
+                                    label="PhoneNumber"
+                                    inputType="text"
+                                    placeHolder="phoneNumber"
+                                ></InputWithLabel01>
+                            </SelectPhoneNumberWrapper>
+                            <InputPhoneNumberWrapper>
+                                <InputWithLabel01
+                                    name="phoneNumber"
+                                    label="&nbsp;"
+                                    inputType="text"
+                                    placeHolder="phoneNumber"
+                                ></InputWithLabel01>
+                            </InputPhoneNumberWrapper>
+                        </CheckInputWrapper>
+                        <CheckIBtnWrapper>
+                            <BtnWrapper>
+                                <RectangleBtnWithLabel01
+                                    label="&nbsp;"
+                                    backgroundColor={COLORS.middlegrayColor}
+                                    content="Check"
+                                ></RectangleBtnWithLabel01>
+                            </BtnWrapper>
+                        </CheckIBtnWrapper>
                     </Layer>
                     <Layer>
                         <BtnWrapper>
                             <RectangleBtnWithLink01
                                 content="Sign Up"
-                                backgroundColor={COLORS.loginColor}
+                                backgroundColor={COLORS.middlegrayColor}
                                 path="/"
                             ></RectangleBtnWithLink01>
                         </BtnWrapper>
