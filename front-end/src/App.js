@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import LoginPage from './components/views/login/LoginPage';
 import SignUpPage from './components/views/signUp/SignUpPage';
+import TestPage from './components/views/test/Test';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -23,6 +24,9 @@ function App() {
           }></Route>
           <Route path='/signUp' element={
             <SignUpPage></SignUpPage>
+          }></Route>
+          <Route path='/test' element={
+            <TestPage></TestPage>
           }></Route>
         </Routes>
       </BrowserRouter>

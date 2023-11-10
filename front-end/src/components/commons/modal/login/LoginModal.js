@@ -19,8 +19,8 @@ const Wrapper = styled.div`
     box-shadow: 0rem 0.4rem 1.2rem 0rem rgba(0, 0, 0, 0.35);
     overflow: hidden;
     opacity: ${(props) => (props.isLoginModalOpen ? 1 : 0)};
-    padding-bottom: 2rem;
-    transition: all 1s ease-in-out;
+    padding: 0 1rem 2rem 1rem;
+    transition: all 1.3s ease-in-out;
 `;
 const ProfileWrapper = styled.div`
     width: 100%;

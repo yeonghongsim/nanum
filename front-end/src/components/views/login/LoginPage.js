@@ -10,14 +10,17 @@ const Container = styled.div`
     background-color: ${COLORS.whiteColor};
 `;
 const Wrapper = styled.div`
-    width: 50rem;
+    width: 60rem;
     margin: auto;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     @media screen and (max-width: 1024px) {
-        width: 30rem;
+        width: 50rem;
+    }
+    @media screen and (max-width: 414px) {
+        width: 35rem;
     }
 `;
 const LoginContainer = styled.div`

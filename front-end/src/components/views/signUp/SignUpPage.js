@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { COLORS } from "../../../commons/styles/COLORS";
 import Logo from "../../commons/logo/LOGO";
 import InputWithLabel01 from "../../commons/input/InputWithLabel01";
-import RectangleBtnWithLabel01 from "../../commons/button/RectangleBtnWithLabel01";
-import RectangleBtnWithLink01 from "../../commons/button/RectangleBtnWithLink01";
+import CheckBtnWithLabel01 from "../../commons/button/CheckBtnWithLabel01";
+import { useRef, useState } from "react";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -25,7 +25,7 @@ const Container = styled.div`
     padding: 2rem;
     gap: 1rem;
     @media screen and (max-width: 1024px) {
-        width: 30rem;
+        width: 35rem;
     }
 `;
 const Form = styled.div`
@@ -49,18 +49,18 @@ const CheckInputWrapper = styled.div`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    padding-right: 1rem;
+    padding-right: 0.5rem;
     @media screen and (max-width: 1024px) {
         width: 70%;
     }
 `;
-const CheckIBtnWrapper = styled.div`
+const CheckBtnWrapper = styled.div`
     width: 20%;
     height: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
     @media screen and (max-width: 1024px) {
         width: 30%;
     }
@@ -68,7 +68,7 @@ const CheckIBtnWrapper = styled.div`
 const NameInputWrapper = styled.div`
     width: 60%;
     height: 100%;
-    padding-right: 1rem;
+    padding-right: 0.5rem;
     @media screen and (max-width: 1024px) {
         width: 50%;
     }
@@ -76,7 +76,7 @@ const NameInputWrapper = styled.div`
 const BirthInputWrapper = styled.div`
     width: 40%;
     height: 100%;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
     @media screen and (max-width: 1024px) {
         width: 50%;
     }
@@ -84,12 +84,18 @@ const BirthInputWrapper = styled.div`
 const SelectPhoneNumberWrapper = styled.div`
     width: 20%;
     height: 100%;
-    padding-right: 1rem;
+    padding-right: 0.5rem;
+    @media screen and (max-width: 1024px) {
+        width: 30%;
+    }
 `;
 const InputPhoneNumberWrapper = styled.div`
     width: 80%;
     height: 100%;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
+    @media screen and (max-width: 1024px) {
+        width: 70%;
+    }
 `;
 const Inputs = styled.div`
     width: 100%;
@@ -98,9 +104,63 @@ const Inputs = styled.div`
 const BtnWrapper = styled.div`
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+const SignUpBtn = styled.div`
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: ${COLORS.middlegrayColor};
+    border-radius: 1rem;
+    cursor: pointer;
+`;
+const Text = styled.p`
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
 `;
 
 export default function SignUpPage() {
+    const userIdRef = useRef(null);
+
+    let [isOnCheck, setIsOnCheck] = useState(false);
+    let [isIdConfirmed, setIsIdConfirmed] = useState(false);
+    let [isOnSignUpBtn, setIsOnSignUpBtn] = useState(true);
+    let [prepareData, setPrepareData] = useState({});
+
+    const handleOnCheckBtn = (isValid) => {
+        setIsOnCheck(isValid);
+    };
+    const handleIdConfirmed = (confirm) => {
+        setIsIdConfirmed(confirm);
+    };
+    const handleSetData = () => {
+        // const userId = userIdRef.current.value;
+        // console.log(userId)
+        // const userId = document.getElementById('userId').value;
+        // const userPw = document.getElementById('userPw').value;
+        // const userName = document.getElementById('userName').value;
+        // const imsiBirthday = document.getElementById('birthday').value;
+        // const birthday = `${imsiBirthday.slice(0, 4)}/${imsiBirthday.slice(4, 6)}/${imsiBirthday.slice(6)}`;
+        // const brandNumber = document.getElementById('brandNumber').value;
+        // const imsiPhoneNumber = document.getElementById('phoneNumber').value;
+        // const phoneNumber = `${brandNumber}-${imsiPhoneNumber.slice(0, 4)}-${imsiPhoneNumber.slice(4)}`
+        // const data = {
+        //     userId: userId,
+        //     userPw: userPw,
+        //     userName: userName,
+        //     birthday: birthday,
+        //     phoneNumber: phoneNumber
+        // };
+        // setPrepareData(data);
+    };
+    // console.log(prepareData)
+
     return (
         <Wrapper>
             <Container>
@@ -113,19 +173,27 @@ export default function SignUpPage() {
                                     name="userId"
                                     label="ID"
                                     inputType="text"
-                                    placeHolder="Put the ID"
+                                    placeHolder="아이디를 입력하세요."
+                                    handleOnCheckBtn={handleOnCheckBtn}
+                                    handleIdConfirmed={handleIdConfirmed}
+                                    userIdRef={userIdRef}
                                 ></InputWithLabel01>
                             </Inputs>
                         </CheckInputWrapper>
-                        <CheckIBtnWrapper>
+                        <CheckBtnWrapper>
                             <BtnWrapper>
-                                <RectangleBtnWithLabel01
+                                <CheckBtnWithLabel01
                                     label="&nbsp;"
                                     backgroundColor={COLORS.middlegrayColor}
                                     content="Check"
-                                ></RectangleBtnWithLabel01>
+                                    id="checkId"
+                                    isOn={isOnCheck}
+                                    isIdConfirmed={isIdConfirmed}
+                                    handleIdConfirmed={handleIdConfirmed}
+                                    handleSetData={handleSetData}
+                                ></CheckBtnWithLabel01>
                             </BtnWrapper>
-                        </CheckIBtnWrapper>
+                        </CheckBtnWrapper>
                     </Layer>
                     <Layer>
                         <Inputs>
@@ -133,7 +201,7 @@ export default function SignUpPage() {
                                 name="userPw"
                                 label="Password"
                                 inputType="password"
-                                placeHolder="Put the Password"
+                                placeHolder="비밀번호를 입력하세요."
                             ></InputWithLabel01>
                         </Inputs>
                     </Layer>
@@ -143,7 +211,7 @@ export default function SignUpPage() {
                                 name="pwCheck"
                                 label="Password Check"
                                 inputType="password"
-                                placeHolder="Put the Same Password"
+                                placeHolder="동일한 비밀번호를 입력하세요."
                             ></InputWithLabel01>
                         </Inputs>
                     </Layer>
@@ -154,7 +222,7 @@ export default function SignUpPage() {
                                     name="userName"
                                     label="Name"
                                     inputType="text"
-                                    placeHolder="Put the Name"
+                                    placeHolder="이름을 입력하세요."
                                 ></InputWithLabel01>
                             </Inputs>
                         </NameInputWrapper>
@@ -164,47 +232,36 @@ export default function SignUpPage() {
                                     name="birthday"
                                     label="Birthday"
                                     inputType="text"
-                                    placeHolder="Birthday"
+                                    placeHolder="생년월일 8자리"
                                 ></InputWithLabel01>
                             </Inputs>
                         </BirthInputWrapper>
                     </Layer>
                     <Layer>
-                        <CheckInputWrapper>
-                            <SelectPhoneNumberWrapper>
-                                <InputWithLabel01
-                                    name="phoneNumber"
-                                    label="PhoneNumber"
-                                    inputType="text"
-                                    placeHolder="phoneNumber"
-                                ></InputWithLabel01>
-                            </SelectPhoneNumberWrapper>
-                            <InputPhoneNumberWrapper>
-                                <InputWithLabel01
-                                    name="phoneNumber"
-                                    label="&nbsp;"
-                                    inputType="text"
-                                    placeHolder="phoneNumber"
-                                ></InputWithLabel01>
-                            </InputPhoneNumberWrapper>
-                        </CheckInputWrapper>
-                        <CheckIBtnWrapper>
-                            <BtnWrapper>
-                                <RectangleBtnWithLabel01
-                                    label="&nbsp;"
-                                    backgroundColor={COLORS.middlegrayColor}
-                                    content="Check"
-                                ></RectangleBtnWithLabel01>
-                            </BtnWrapper>
-                        </CheckIBtnWrapper>
+                        <SelectPhoneNumberWrapper>
+                            <InputWithLabel01
+                                name="brandNumber"
+                                label="PhoneNumber"
+                                inputType="text"
+                                placeHolder="통신사 번호"
+                            ></InputWithLabel01>
+                        </SelectPhoneNumberWrapper>
+                        <InputPhoneNumberWrapper>
+                            <InputWithLabel01
+                                name="phoneNumber"
+                                label="&nbsp;"
+                                inputType="text"
+                                placeHolder="' - ' 없이 숫자 8자리"
+                            ></InputWithLabel01>
+                        </InputPhoneNumberWrapper>
                     </Layer>
                     <Layer>
                         <BtnWrapper>
-                            <RectangleBtnWithLink01
-                                content="Sign Up"
-                                backgroundColor={COLORS.middlegrayColor}
-                                path="/"
-                            ></RectangleBtnWithLink01>
+                            <SignUpBtn
+                                onClick={handleSetData}
+                            >
+                                <Text>Sign Up</Text>
+                            </SignUpBtn>
                         </BtnWrapper>
                     </Layer>
                 </Form>
