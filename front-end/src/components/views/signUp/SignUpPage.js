@@ -3,7 +3,8 @@ import { COLORS } from "../../../commons/styles/COLORS";
 import Logo from "../../commons/logo/LOGO";
 import InputWithLabel01 from "../../commons/input/InputWithLabel01";
 import CheckBtnWithLabel01 from "../../commons/button/CheckBtnWithLabel01";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import SelectBoxWithLabel01 from "../../commons/select/SelectBoxWithLabel01";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -115,9 +116,10 @@ const SignUpBtn = styled.div`
     align-items: center;
     justify-content: center;
     color: white;
-    background-color: ${COLORS.middlegrayColor};
+    background-color: ${props => props.isOn ? COLORS.linkColor : COLORS.middlegrayColor};
     border-radius: 1rem;
     cursor: pointer;
+    transition: all 0.8s;
 `;
 const Text = styled.p`
     font-size: 1.8rem;
@@ -126,12 +128,16 @@ const Text = styled.p`
 `;
 
 export default function SignUpPage() {
-    const userIdRef = useRef(null);
 
     let [isOnCheck, setIsOnCheck] = useState(false);
     let [isIdConfirmed, setIsIdConfirmed] = useState(false);
-    let [isOnSignUpBtn, setIsOnSignUpBtn] = useState(true);
+    let [isConfirmedUserPw, setIsConfirmedUserPw] = useState(false);
+    let [isConfirmedUserName, setIsConfirmedUserName] = useState(false);
+    let [isConfirmedBirthday, setIsConfirmedBirthday] = useState(false);
+    let [isConfirmedPhoneNumber, setIsConfirmedPhoneNumber] = useState(false);
+    let [isOnSignUpBtn, setIsOnSignUpBtn] = useState(false);
     let [prepareData, setPrepareData] = useState({});
+    let [brandNumber, setBrandNumber] = useState('010');
 
     const handleOnCheckBtn = (isValid) => {
         setIsOnCheck(isValid);
@@ -139,27 +145,84 @@ export default function SignUpPage() {
     const handleIdConfirmed = (confirm) => {
         setIsIdConfirmed(confirm);
     };
-    const handleSetData = () => {
-        // const userId = userIdRef.current.value;
-        // console.log(userId)
-        // const userId = document.getElementById('userId').value;
-        // const userPw = document.getElementById('userPw').value;
-        // const userName = document.getElementById('userName').value;
-        // const imsiBirthday = document.getElementById('birthday').value;
-        // const birthday = `${imsiBirthday.slice(0, 4)}/${imsiBirthday.slice(4, 6)}/${imsiBirthday.slice(6)}`;
-        // const brandNumber = document.getElementById('brandNumber').value;
-        // const imsiPhoneNumber = document.getElementById('phoneNumber').value;
-        // const phoneNumber = `${brandNumber}-${imsiPhoneNumber.slice(0, 4)}-${imsiPhoneNumber.slice(4)}`
-        // const data = {
-        //     userId: userId,
-        //     userPw: userPw,
-        //     userName: userName,
-        //     birthday: birthday,
-        //     phoneNumber: phoneNumber
-        // };
-        // setPrepareData(data);
+    const handlePwConfirmed = (confirm) => {
+        setIsConfirmedUserPw(confirm)
     };
-    // console.log(prepareData)
+    const handleNameConfirmed = (confirm) => {
+        setIsConfirmedUserName(confirm)
+    };
+    const handleBirthdayConfirmed = (confirm) => {
+        setIsConfirmedBirthday(confirm);
+    };
+    const handlePhoneNumberConfirmed = (confirm) => {
+        setIsConfirmedPhoneNumber(confirm);
+    };
+    const handleSignUpBtnToggle = (toggle) => {
+        setIsOnSignUpBtn(toggle);
+    };
+
+    useEffect(() => {
+        if (isIdConfirmed && isConfirmedUserPw && isConfirmedUserName
+            && isConfirmedBirthday && isConfirmedPhoneNumber) {
+            handleSignUpBtnToggle(true);
+        } else {
+            handleSignUpBtnToggle(false);
+        }
+    }, [
+        isIdConfirmed
+        , isConfirmedUserPw
+        , isConfirmedUserName
+        , isConfirmedBirthday
+        , isConfirmedPhoneNumber]);
+
+    // console.log(isOnSignUpBtn)
+    const handleSetData = (e) => {
+        if (isOnSignUpBtn) {
+            const userId = document.getElementById('userId').value;
+            const userPassword = document.getElementById('userPw').value;
+            const userName = document.getElementById('userName').value;
+            const imsiBirthday = document.getElementById('birthday').value;
+            const birthday = `${imsiBirthday.slice(0, 4) + '.' + imsiBirthday.slice(4, 6) + '.' + imsiBirthday.slice(6)}`
+            const imsiPhoneNumber = document.getElementById('phoneNumber').value;
+            const phoneNumber = brandNumber + '-' + imsiPhoneNumber.slice(0, 4) + '-' + imsiPhoneNumber.slice(4);
+            const data = {
+                userId: userId,
+                userPassword: userPassword,
+                userName: userName,
+                birthday: birthday,
+                phoneNumber: phoneNumber
+            };
+            setPrepareData(data);
+            handleSignUp(data)
+        }
+    };
+
+    const brandNumberRef = useRef(null);
+    const handleOptionClick = (option) => {
+        setBrandNumber(option.value);
+    };
+
+    const handleSignUp = async (data) => {
+        try {
+            const response = await fetch('http://localhost:8080/signUp', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            // 서버 응답 후 필요한 로직
+            if (response.ok) {
+                console.log('success');
+                // 등록 후 화면 이동
+                window.location.href = '/login';
+            }
+            else { console.log('fail') }
+        } catch (error) { console.log('통신 오류: ', error) }
+    };
+
 
     return (
         <Wrapper>
@@ -176,7 +239,6 @@ export default function SignUpPage() {
                                     placeHolder="아이디를 입력하세요."
                                     handleOnCheckBtn={handleOnCheckBtn}
                                     handleIdConfirmed={handleIdConfirmed}
-                                    userIdRef={userIdRef}
                                 ></InputWithLabel01>
                             </Inputs>
                         </CheckInputWrapper>
@@ -212,6 +274,7 @@ export default function SignUpPage() {
                                 label="Password Check"
                                 inputType="password"
                                 placeHolder="동일한 비밀번호를 입력하세요."
+                                handlePwConfirmed={handlePwConfirmed}
                             ></InputWithLabel01>
                         </Inputs>
                     </Layer>
@@ -223,6 +286,7 @@ export default function SignUpPage() {
                                     label="Name"
                                     inputType="text"
                                     placeHolder="이름을 입력하세요."
+                                    handleNameConfirmed={handleNameConfirmed}
                                 ></InputWithLabel01>
                             </Inputs>
                         </NameInputWrapper>
@@ -233,18 +297,26 @@ export default function SignUpPage() {
                                     label="Birthday"
                                     inputType="text"
                                     placeHolder="생년월일 8자리"
+                                    handleBirthdayConfirmed={handleBirthdayConfirmed}
                                 ></InputWithLabel01>
                             </Inputs>
                         </BirthInputWrapper>
                     </Layer>
                     <Layer>
                         <SelectPhoneNumberWrapper>
-                            <InputWithLabel01
+                            <SelectBoxWithLabel01
                                 name="brandNumber"
                                 label="PhoneNumber"
-                                inputType="text"
-                                placeHolder="통신사 번호"
-                            ></InputWithLabel01>
+                                defaultValue={
+                                    { label: "010", value: "010" }
+                                }
+                                options={[
+                                    { label: "010", value: "010" },
+                                    { label: "011", value: "011" }
+                                ]}
+                                brandNumberRef={brandNumberRef}
+                                handleOptionClick={handleOptionClick}
+                            ></SelectBoxWithLabel01>
                         </SelectPhoneNumberWrapper>
                         <InputPhoneNumberWrapper>
                             <InputWithLabel01
@@ -252,12 +324,14 @@ export default function SignUpPage() {
                                 label="&nbsp;"
                                 inputType="text"
                                 placeHolder="' - ' 없이 숫자 8자리"
+                                handlePhoneNumberConfirmed={handlePhoneNumberConfirmed}
                             ></InputWithLabel01>
                         </InputPhoneNumberWrapper>
                     </Layer>
                     <Layer>
                         <BtnWrapper>
                             <SignUpBtn
+                                isOn={isOnSignUpBtn}
                                 onClick={handleSetData}
                             >
                                 <Text>Sign Up</Text>
@@ -269,3 +343,4 @@ export default function SignUpPage() {
         </Wrapper>
     )
 }
+

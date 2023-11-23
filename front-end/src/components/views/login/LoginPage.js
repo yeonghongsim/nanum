@@ -57,13 +57,13 @@ export default function LoginPage() {
                         <LOGO></LOGO>
                         <InputWithLabel01
                             label="Id"
-                            name="userId"
+                            name="userId2"
                             inputType="text"
                             placeHolder="Put your Id"
                         ></InputWithLabel01>
                         <InputWithLabel01
                             label="Password"
-                            name="userPw"
+                            name="userPw2"
                             inputType="password"
                             placeHolder="Put your Password"
                         ></InputWithLabel01>

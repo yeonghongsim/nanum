@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { COLORS } from "../../../commons/styles/COLORS";
-import { useEffect, useState } from "react";
 
 const IdCheckBtnWrapper = styled.div`
     width: 100%;
@@ -26,7 +25,7 @@ const RectangleBtn = styled.div`
     justify-content: center;
     cursor: pointer;
     background-color: ${(props) => (props.isOn ? COLORS.linkColor : COLORS.middlegrayColor)};
-    opacity: ${(props) => (props.isIdConfirmed ? 0.75 : 1)};
+    opacity: ${(props) => (props.isIdConfirmed ? 0.7 : 1)};
     transition: all 0.8s;
 `;
 const Text = styled.p`
@@ -42,14 +41,16 @@ export default function CheckBtnWithLabel01(props) {
             .then(res => res.json())
             .then((data) => {
                 let result = data.result;
-                if (result != null) {
-                    alert('이미 사용중인 아이디 입니다.')
-                } else {
+                if (result == null) {
                     const confirmMsg = window.confirm('사용가능한 아이디 입니다.');
                     if (confirmMsg) {
                         console.log('사용 클릭');
                         props.handleIdConfirmed(true);
+                    } else {
+                        props.handleIdConfirmed(false);
                     }
+                } else {
+                    alert('이미 사용중인 아이디 입니다.')
                 }
             })
     };
