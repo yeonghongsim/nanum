@@ -46,6 +46,7 @@ app.get('/checkId/:imsiId', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 })
+
 app.post('/signUp', async function (req, res) {
     try {
         console.log('Received a signUp request from the front end.');
@@ -73,4 +74,20 @@ app.post('/signUp', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 
+});
+
+app.get('/login', async function (req, res) {
+    try {
+        console.log('Login processing start');
+        console.log('userId : ' + req.query.userId);
+        console.log('userPassword : ' + req.query.userPassword);
+        db.collection('users').findOne({ userId: req.query.userId, userPassword: req.query.userPassword }, function (error, result) {
+            console.log(result)
+            res.send({ result: result })
+        })
+    }
+    catch (error) {
+        console.error('Error processing signUp request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });

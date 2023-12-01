@@ -58,7 +58,7 @@ export default function InputWithLabel01(props) {
         if (e.target.name === 'userId') {
             const inputValue = inputRef.current.value;
 
-            // 영어와 숫자 혼합이며, 길이가 8 이상인지 확인
+            // 영어와 숫자,한글x 의 혼합이며, 길이가 8 이상인지 확인
             const isValid = /^(?=.*[a-zA-Z])(?=.*\d)(?!.*[ㄱ-ㅎㅏ-ㅣ가-힣])\S{8,}$/.test(inputValue);
 
             if (!isValid && inputValue.length > 0) {
@@ -78,7 +78,7 @@ export default function InputWithLabel01(props) {
         }
         if (e.target.name === 'userPw') {
             const inputValue = e.target.value;
-
+            // 특수기호,영문,숫자 혼합 10자리 이상인지 확인
             const isValid = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[a-zA-Z])(?=.*\d).{10,}$/.test(inputValue);
             if (!isValid && inputValue.length > 0) {
                 setErrMsg('* 특수기호,영문,숫자 혼합 10자리 이상');
@@ -104,6 +104,7 @@ export default function InputWithLabel01(props) {
         }
         if (e.target.name === 'userName') {
             const inputValue = e.target.value;
+            // 한글만 인지 확인
             const isValid = /^(?=.*[가-힣])(?!.*[ㄱ-ㅎㅏ-ㅣ])(?!.*[0-9])(?!.*[a-zA-Z])\S+$/.test(inputValue);
             if (!isValid && inputValue.length > 0) {
                 setErrMsg('올바르지 않습니다.')
@@ -118,6 +119,7 @@ export default function InputWithLabel01(props) {
         }
         if (e.target.name === 'birthday') {
             const inputValue = e.target.value;
+            // 숫자인지 확인
             const onlyNumber = /^[0-9]+$/.test(inputValue);
             if (inputValue.length === 8 && onlyNumber) {
                 setErrMsg('')

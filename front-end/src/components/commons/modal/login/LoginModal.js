@@ -108,6 +108,8 @@ export default function LoginModal(props) {
 
     return (
         <Wrapper isLoginModalOpen={props.isLoginModalOpen} ref={modalRef}>
+            {/* {user == null ?
+                'not login' : 'login'} */}
             <ProfileWrapper>
                 <ProfileInfoWrapper>
                     <ProfileIcon
@@ -117,8 +119,6 @@ export default function LoginModal(props) {
                     ></ProfileIcon>
                     <ProfileInfo>
                         <Title>Guest <TextSpan>님</TextSpan></Title>
-                        {/* <Title>Name <TextSpan>님 반갑습니다.</TextSpan></Title>
-                        <TextP>birthday</TextP> */}
                     </ProfileInfo>
                 </ProfileInfoWrapper>
                 {/* <WishListWrapper>

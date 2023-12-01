@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import ProfileIcon from '../../profile/Profile';
 import LoginModal from '../../modal/login/LoginModal';
 import { useCallback, useState } from 'react';
-import SearchInput01 from '../../input/SearchInput01';
 import LOGO from '../../logo/LOGO';
 
 const Wrapper = styled.div`
@@ -23,12 +22,12 @@ const LogoWrapper = styled.div`
     align-items: center;
     justify-content: center;
 `;
-const SearchWrapper = styled.div`
-    width: 50%;
-    height: 100%;
-    box-sizing: border-box;
-    padding: 0.3rem;
-`;
+// const SearchWrapper = styled.div`
+//     width: 50%;
+//     height: 100%;
+//     box-sizing: border-box;
+//     padding: 0.3rem;
+// `;
 const LoginWrapper = styled.div`
     height: 100%;
     display: flex;
@@ -54,9 +53,9 @@ export default function LayoutHeader() {
                 <LogoWrapper>
                     <LOGO></LOGO>
                 </LogoWrapper>
-                <SearchWrapper>
+                {/* <SearchWrapper>
                     <SearchInput01></SearchInput01>
-                </SearchWrapper>
+                </SearchWrapper> */}
                 <LoginWrapper>
                     <ProfileIcon
                         isLoginModalOpen={isLoginModalOpen}
