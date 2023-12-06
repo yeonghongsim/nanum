@@ -34,19 +34,21 @@ const Input = styled.input`
 `;
 
 export default function InputWithLabel02(props) {
+    let modifiedPlaceholder = props.placeHolder;
 
     if (props.phoneNumber === 'phoneNumber') {
-        const brandNumber = props.placeHolder.split('-')[0];
         const phoneNumber = props.placeHolder.split('-')[1] + props.placeHolder.split('-')[2];
-        console.log(brandNumber);
-        console.log(phoneNumber);
+        modifiedPlaceholder = phoneNumber;
     }
 
     return (
         <Wrapper>
             <Label>{props.label}</Label>
             <InputWrapper>
-                <Input placeHolder={props.placeHolder}></Input>
+                <Input
+                    type={props.inputType}
+                    placeholder={modifiedPlaceholder}
+                ></Input>
             </InputWrapper>
         </Wrapper>
     )

@@ -21,6 +21,9 @@ const Header = styled.div`
     align-items: center;
     justify-content: flex-start;
     padding-left: 1rem;
+    @media screen and (max-width: 1024px) {
+        width: 100%;
+    }
 `;
 export default function UsersHeaderContainer() {
     return (
