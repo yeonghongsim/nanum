@@ -136,7 +136,7 @@ export default function SignUpPage() {
     let [isConfirmedBirthday, setIsConfirmedBirthday] = useState(false);
     let [isConfirmedPhoneNumber, setIsConfirmedPhoneNumber] = useState(false);
     let [isOnSignUpBtn, setIsOnSignUpBtn] = useState(false);
-    let [prepareData, setPrepareData] = useState({});
+    // let [prepareData, setPrepareData] = useState({});
     let [brandNumber, setBrandNumber] = useState('010');
 
     const handleOnCheckBtn = (isValid) => {
@@ -190,10 +190,11 @@ export default function SignUpPage() {
                 userPassword: userPassword,
                 userName: userName,
                 birthday: birthday,
-                phoneNumber: phoneNumber
+                phoneNumber: phoneNumber,
+                profileImg: "null"
             };
-            setPrepareData(data);
-            handleSignUp(data)
+            // setPrepareData(data);
+            handleSignUp(data);
         }
     };
 

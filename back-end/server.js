@@ -56,7 +56,8 @@ app.post('/signUp', async function (req, res) {
             userPassword: req.body.userPassword,
             userName: req.body.userName,
             birthday: req.body.birthday,
-            phoneNumber: req.body.phoneNumber
+            phoneNumber: req.body.phoneNumber,
+            profileImg: req.body.profileImg
         }, function (error, result) {
             res.redirect('/test')
         }, function (error, result) {
