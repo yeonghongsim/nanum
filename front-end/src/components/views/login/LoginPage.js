@@ -6,6 +6,9 @@ import RectangleBtn01 from "../../commons/button/RectangleBtn01";
 import InputWithLabel02Ref from "../../commons/input/InputWithLabel02Ref";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import store from "../../../commons/store/store";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../commons/store/userSlice";
 
 const Container = styled.div`
     width: 100%;
@@ -52,6 +55,7 @@ const BtnWrapper = styled.div`
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const userIdRef = useRef(null);
     const userPwRef = useRef(null);
@@ -101,7 +105,7 @@ export default function LoginPage() {
     };
 
     const loginFetch = async (userId, userPassword) => {
-        console.log('login fetch start');
+        // console.log('login fetch start');
         // 데이터 저장
         const data = {
             userId: userId,
@@ -124,21 +128,22 @@ export default function LoginPage() {
             })
             .then(data => {
                 if (data.result == null) {
-                    console.log('회원정보 불일치');
+                    // console.log('회원정보 불일치');
                     setIsPwError(true);
                     setPwErrMsg('아이디 또는 비밀번호가 일치하지 않습니다.');
                 } else {
-                    console.log('회원정보 일치');
-                    // console.log(data.result);
-                    const test = {
+                    // console.log('회원정보 일치');
+                    const userInfo = {
                         _id: data.result._id,
                         userId: data.result.userId,
                         userName: data.result.userName,
                         birthday: data.result.birthday,
                         phoneNumber: data.result.phoneNumber
                     }
-                    console.log(test)
+                    // console.log(userInfo);
                     // store에 저장
+                    store.dispatch(setUser(userInfo));
+                    // 페이지 이동
                     navigate('/');
                 }
             })

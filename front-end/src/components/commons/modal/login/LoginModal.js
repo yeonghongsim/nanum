@@ -3,6 +3,11 @@ import styled from "styled-components"
 import ProfileIcon from "../../profile/Profile";
 import { COLORS } from "../../../../commons/styles/COLORS";
 import RectangleBtnWithLink01 from "../../button/RectangleBtnWithLink01";
+import { useSelector } from "react-redux";
+import RectangleBtn02 from "../../button/RectangleBtn02";
+import store from "../../../../commons/store/store";
+import { setUser } from "../../../../commons/store/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
     width: 30rem;
@@ -59,15 +64,20 @@ const TextSpan = styled.span`
     font-weight: normal;
     margin: 0;
 `;
-// const TextP = styled.p`
-//     font-size: 1.6rem;
-//     font-weight: normal;
-//     margin: 0;
-// `;
-// const WishListWrapper = styled.div`
-//     width: 100%;
-//     height: 4rem;
-// `;
+const ProfileText = styled.span`
+    font-size: 1.4rem;
+    font-weight: normal;
+    &:hover {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: bold;
+    }
+`;
+const WishListWrapper = styled.div`
+    width: 100%;
+    height: 4rem;
+`;
 const LogBtnWrapper = styled.div`
     width: 100%;
     height: 6rem;
@@ -84,6 +94,9 @@ const BtnsWrapper = styled.div`
 `;
 
 export default function LoginModal(props) {
+    const userInfo = useSelector((state) => state.user.user);
+    const navigate = useNavigate();
+
     const modalRef = useRef(null);
 
     useEffect(() => {
@@ -105,45 +118,79 @@ export default function LoginModal(props) {
         , modalRef
     ]);
 
+    const handleLogoutClick = () => {
+        store.dispatch(setUser(null));
+        navigate('/');
+    };
+    const goToUsersProfile = (e) => {
+        navigate('/users/profile');
+    };
+
 
     return (
         <Wrapper isLoginModalOpen={props.isLoginModalOpen} ref={modalRef}>
-            {/* {user == null ?
-                'not login' : 'login'} */}
-            <ProfileWrapper>
-                <ProfileInfoWrapper>
-                    <ProfileIcon
-                        isLoginModalOpen={props.isLoginModalOpen}
-                        setIsLoginModalOpen={props.setIsLoginModalOpen}
-                        cursorStyle="normal"
-                    ></ProfileIcon>
-                    <ProfileInfo>
-                        <Title>Guest <TextSpan>님</TextSpan></Title>
-                    </ProfileInfo>
-                </ProfileInfoWrapper>
-                {/* <WishListWrapper>
-                    <RectangleBtnWithLink01
-                        backgroundColor={COLORS.likeColor}
-                        content="WishList"
-                    ></RectangleBtnWithLink01>
-                </WishListWrapper> */}
-            </ProfileWrapper>
-            <LogBtnWrapper>
-                <BtnsWrapper>
-                    <RectangleBtnWithLink01
-                        backgroundColor={COLORS.loginColor}
-                        content="Login"
-                        path="/login"
-                    ></RectangleBtnWithLink01>
-                </BtnsWrapper>
-                <BtnsWrapper>
-                    <RectangleBtnWithLink01
-                        backgroundColor={COLORS.middlegrayColor}
-                        content="Sign Up"
-                        path="/signUp"
-                    ></RectangleBtnWithLink01>
-                </BtnsWrapper>
-            </LogBtnWrapper>
-        </Wrapper>
+            {userInfo == null ?
+                <>
+                    <ProfileWrapper>
+                        <ProfileInfoWrapper>
+                            <ProfileIcon
+                                isLoginModalOpen={props.isLoginModalOpen}
+                                setIsLoginModalOpen={props.setIsLoginModalOpen}
+                                cursorStyle="normal"
+                            ></ProfileIcon>
+                            <ProfileInfo>
+                                <Title>Guest <TextSpan>님</TextSpan></Title>
+                            </ProfileInfo>
+                        </ProfileInfoWrapper>
+                    </ProfileWrapper>
+                    <LogBtnWrapper>
+                        <BtnsWrapper>
+                            <RectangleBtnWithLink01
+                                backgroundColor={COLORS.loginColor}
+                                content="Login"
+                                path="/login"
+                            ></RectangleBtnWithLink01>
+                        </BtnsWrapper>
+                        <BtnsWrapper>
+                            <RectangleBtnWithLink01
+                                backgroundColor={COLORS.middlegrayColor}
+                                content="Sign Up"
+                                path="/signUp"
+                            ></RectangleBtnWithLink01>
+                        </BtnsWrapper>
+                    </LogBtnWrapper>
+                </> :
+                <>
+                    <ProfileWrapper>
+                        <ProfileInfoWrapper>
+                            <ProfileIcon
+                                isLoginModalOpen={props.isLoginModalOpen}
+                                setIsLoginModalOpen={props.setIsLoginModalOpen}
+                                cursorStyle="normal"
+                            ></ProfileIcon>
+                            <ProfileInfo>
+                                <Title>{userInfo.userName} <TextSpan>님</TextSpan></Title>
+                                <ProfileText onClick={goToUsersProfile}>프로필</ProfileText>
+                            </ProfileInfo>
+                        </ProfileInfoWrapper>
+                        <WishListWrapper>
+                            <RectangleBtnWithLink01
+                                backgroundColor={COLORS.likeColor}
+                                content="WishList"
+                                path="/users/wishList"
+                            ></RectangleBtnWithLink01>
+                        </WishListWrapper>
+                    </ProfileWrapper>
+                    <LogBtnWrapper>
+                        <BtnsWrapper>
+                            <RectangleBtn02
+                                content="Logout"
+                                backgroundColor={COLORS.loginColor}
+                                handleLogoutClick={handleLogoutClick}
+                            ></RectangleBtn02>
+                        </BtnsWrapper>
+                    </LogBtnWrapper>
+                </>}
+        </Wrapper >
     )
 }
