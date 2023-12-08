@@ -8,6 +8,8 @@ import TestPage from './components/views/test/Test';
 import UsersProfilePage from './components/views/users/profile/UsersProfilePage';
 import UsersWishListPage from './components/views/users/wishList/UsersWishListPage';
 import UsersProfileFormPage from './components/views/users/profile/UsersProfileFormPage';
+import UsersItemListPage from './components/views/users/itemList/UsersItemListPage';
+import UsersRegisterItemPage from './components/views/users/registerItem/UsersRegisterItemPage';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -34,6 +36,8 @@ function App() {
           <Route path='profile' element={<UsersProfilePage></UsersProfilePage>}></Route>
           <Route path='wishList' element={<UsersWishListPage></UsersWishListPage>}></Route>
           <Route path='profileUpdate' element={<UsersProfileFormPage></UsersProfileFormPage>}></Route>
+          <Route path='itemList' element={<UsersItemListPage></UsersItemListPage>}></Route>
+          <Route path='registerItem' element={<UsersRegisterItemPage></UsersRegisterItemPage>}></Route>
         </Route>
       </Routes>
     </Wrapper>

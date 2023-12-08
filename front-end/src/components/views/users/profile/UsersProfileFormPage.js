@@ -16,7 +16,7 @@ const Content = styled.div`
     margin: auto;
     box-sizing: border-box;
     display: flex;
-    padding-top: 3rem;
+    margin-top: 3rem;
     gap: 3rem;
     @media screen and (max-width: 1024px) {
         width: 80%;
@@ -162,7 +162,7 @@ export default function UsersProfileFormPage(props) {
     const handleFileClick = () => {
         fileInputRef.current.click();
     };
-    const imgFile = [];
+    // const imgFile = [];
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         // console.log(file.name);
@@ -269,7 +269,7 @@ export default function UsersProfileFormPage(props) {
                             <BtnWrapper>
                                 <RectangleBtnWithLink01
                                     path="/users/profile"
-                                    content="로그정보 수정"
+                                    content="회원정보 수정"
                                     backgroundColor={COLORS.linkColor}
                                 ></RectangleBtnWithLink01>
                             </BtnWrapper>

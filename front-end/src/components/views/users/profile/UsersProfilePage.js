@@ -76,9 +76,18 @@ const ProfileInfoContainer = styled.div`
     gap: 2rem;
     box-sizing: border-box;
 `;
-const BtnContainer = styled.div`
+const Layer = styled.div`
     width: 100%;
-    height: 5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+`;
+const BtnContainer = styled.div`
+    // width: 100%;
+    // height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -103,6 +112,7 @@ const TextP = styled.p`
     font-weight: normal;
     margin: 0;
 `;
+
 export default function UsersProfilePage() {
     const userInfo = useSelector((state) => state.user.user);
     // console.log(userInfo);
@@ -130,6 +140,17 @@ export default function UsersProfilePage() {
                             </ProfileInfoContainer>
                         </ProfileImgNInfoContainer>
                     </ProfileContainer>
+                </ContentBody>
+                <Layer>
+                    <BtnContainer>
+                        <BtnWrapper>
+                            <RectangleBtnWithLink01
+                                path="/"
+                                content="홈으로"
+                                backgroundColor={COLORS.primaryColor}
+                            ></RectangleBtnWithLink01>
+                        </BtnWrapper>
+                    </BtnContainer>
                     <BtnContainer>
                         <BtnWrapper>
                             <RectangleBtnWithLink01
@@ -140,7 +161,7 @@ export default function UsersProfilePage() {
                             ></RectangleBtnWithLink01>
                         </BtnWrapper>
                     </BtnContainer>
-                </ContentBody>
+                </Layer>
             </Content>
         </Wrapper>
     )

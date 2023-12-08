@@ -64,6 +64,13 @@ const TextSpan = styled.span`
     font-weight: normal;
     margin: 0;
 `;
+const Layer = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+`;
 const ProfileText = styled.span`
     font-size: 1.4rem;
     font-weight: normal;
@@ -122,8 +129,11 @@ export default function LoginModal(props) {
         store.dispatch(setUser(null));
         navigate('/');
     };
-    const goToUsersProfile = (e) => {
+    const goToUsersProfile = () => {
         navigate('/users/profile');
+    };
+    const goToUsersItemList = () => {
+        navigate('/users/itemList');
     };
 
 
@@ -170,7 +180,11 @@ export default function LoginModal(props) {
                             ></ProfileIcon>
                             <ProfileInfo>
                                 <Title>{userInfo.userName} <TextSpan>님</TextSpan></Title>
-                                <ProfileText onClick={goToUsersProfile}>프로필</ProfileText>
+                                <Layer>
+                                    <ProfileText onClick={goToUsersProfile}>프로필 관리</ProfileText>
+                                    <TextSpan>&nbsp;&nbsp;/&nbsp;&nbsp; </TextSpan>
+                                    <ProfileText onClick={goToUsersItemList}>내 물건 관리</ProfileText>
+                                </Layer>
                             </ProfileInfo>
                         </ProfileInfoWrapper>
                         <WishListWrapper>
