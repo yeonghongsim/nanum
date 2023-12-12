@@ -33,6 +33,7 @@ MongoClient.connect('mongodb+srv://admin:qwer1234@cluster0.qme18ml.mongodb.net/?
 
     })
 
+// 테스트 용
 app.get('/checkId/:imsiId', async function (req, res) {
     try {
         console.log('Received a checkId request from the front end.');
@@ -47,6 +48,7 @@ app.get('/checkId/:imsiId', async function (req, res) {
     }
 })
 
+// 사용자 회원가입 코드
 app.post('/signUp', async function (req, res) {
     try {
         console.log('Received a signUp request from the front end.');
@@ -58,8 +60,6 @@ app.post('/signUp', async function (req, res) {
             birthday: req.body.birthday,
             phoneNumber: req.body.phoneNumber,
             profileImg: req.body.profileImg
-        }, function (error, result) {
-            res.redirect('/test')
         }, function (error, result) {
             if (error) {
                 console.error('Error inserting data into the database:', error);
@@ -74,9 +74,9 @@ app.post('/signUp', async function (req, res) {
         console.error('Error processing signUp request:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-
 });
 
+// 사용자 로그인 코드
 app.get('/login', async function (req, res) {
     try {
         console.log('Login processing start');
@@ -89,6 +89,65 @@ app.get('/login', async function (req, res) {
     }
     catch (error) {
         console.error('Error processing signUp request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// 아이템 목록 코드
+app.get('/itemType', async function (req, res) {
+    try {
+        console.log('itemType processing start');
+
+        const result = await db.collection('itemType').find({}).toArray();
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error getting itemType data:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// 사용자 측 나눔 물건 등록 코드
+app.post('/users/resisterItem', async function (req, res) {
+    console.log(req.body);
+    try {
+        console.log('Received a resisterItem request from the front end.');
+        // 여기에서 실제로 데이터베이스에 데이터를 추가하는 등의 작업 수행 가능
+        db.collection('items').insertOne({
+            // 저장할 데이터 정리
+            imageList: req.body.imageList,
+            itemName: req.body.itemName,
+            title: req.body.title,
+            content: req.body.content,
+            locate: req.body.locate,
+            itemTypeList: req.body.itemTypeList,
+            userId: req.body.userId,
+            phoneNumber: req.body.phoneNumber,
+            isShared: req.body.isShared,
+        }, function (error, result) {
+            if (error) {
+                console.error('Error inserting data into the database:', error);
+                res.status(500).json({ message: 'Internal Server Error' });
+            }
+            else {
+                console.log('Data inserted successfully.');
+                res.status(200).json({ message: 'Success' });
+            }
+        })
+    } catch (error) {
+        console.error('Error processing resister item request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// 사용자 측 등록한 물건 목록 조회
+app.get('/users/itemList/:userId', async function (req, res) {
+    try {
+        console.log('users/itemList processing start');
+        const userId = req.params.userId;
+        const result = await db.collection('items').find({ userId }).toArray();
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error getting itemType data:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });

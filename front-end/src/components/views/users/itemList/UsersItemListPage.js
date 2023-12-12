@@ -2,6 +2,9 @@ import styled from "styled-components";
 import UsersHeaderContainer from "../../../commons/layout/users/header/UsersHeaderContainer";
 import RectangleBtnWithLink01 from "../../../commons/button/RectangleBtnWithLink01";
 import { COLORS } from "../../../../commons/styles/COLORS";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -115,7 +118,30 @@ const Layer = styled.div`
     box-sizing: border-box;
 `;
 export default function UsersItemListPage() {
-    const testArr = [1, 2, 3, 4, 5, 6];
+    // 사용자 정보 조회
+    const userInfo = useSelector((state) => state.user.user);
+    // 사용자 등록 물건 목록 조회 통
+    const [userItems, setUserItems] = useState([]);
+    // 사용자 id 통해 사용자 등록 물건 조회
+    const fetchUserItems = async () => {
+        const userId = userInfo._id;
+        try {
+            const fullURL = `http://localhost:8080/users/itemList/${userId}`;
+            const response = await axios.get(fullURL);
+            const itemArray = response.data;
+            setUserItems(itemArray);
+        } catch (error) {
+            console.error('Error getting itemType data:', error);
+            throw error;
+        }
+    };
+    // 자동 실행
+    useEffect(() => {
+        fetchUserItems();
+    }, []);
+    // 조회
+    console.log(userItems);
+
     return (
         <Wrapper>
             <UsersHeaderContainer></UsersHeaderContainer>
@@ -131,14 +157,14 @@ export default function UsersItemListPage() {
                 </AddItemBtnContainer>
                 <CardListContainer>
                     {
-                        testArr.map((val, idx) =>
-                            <CardContainer>
+                        userItems.map((item, index) =>
+                            <CardContainer key={index}>
                                 <CardImgContainer>
                                     <CardImg src="/images/house1.jpeg"></CardImg>
                                 </CardImgContainer>
                                 <CardInfoContainer>
-                                    <CardHead>ItemName</CardHead>
-                                    <CardContent>coment</CardContent>
+                                    <CardHead>{item.itemName}</CardHead>
+                                    <CardContent>{item.itemTypeList}</CardContent>
                                 </CardInfoContainer>
                             </CardContainer>
                         )

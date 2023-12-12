@@ -10,6 +10,7 @@ import UsersWishListPage from './components/views/users/wishList/UsersWishListPa
 import UsersProfileFormPage from './components/views/users/profile/UsersProfileFormPage';
 import UsersItemListPage from './components/views/users/itemList/UsersItemListPage';
 import UsersRegisterItemPage from './components/views/users/registerItem/UsersRegisterItemPage';
+import Test1 from './components/views/test/Test1';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -31,6 +32,9 @@ function App() {
         }></Route>
         <Route path='/test' element={
           <TestPage></TestPage>
+        }></Route>
+        <Route path='/test1' element={
+          <Test1></Test1>
         }></Route>
         <Route path='/users'>
           <Route path='profile' element={<UsersProfilePage></UsersProfilePage>}></Route>

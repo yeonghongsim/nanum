@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import styled from "styled-components"
+import { COLORS } from "../../../commons/styles/COLORS";
 
 const FileImageInputWrapper = styled.div`
     width: 100%;
@@ -22,9 +23,6 @@ const AddBtnContainer = styled.div`
     border: 1px solid black;
     background-color: white;
     border-radius: 1rem;
-    // position: absolute;
-    // top: 2rem;
-    // right: 2rem;
     opacity: 1;
     transition: all 0.8s;
     &:hover {
@@ -36,9 +34,36 @@ const AddBtnIcon = styled.img`
     width: 100%;
     height: 100%;
 `;
+const RemoveBtnContainer = styled.div`
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid ${COLORS.middlegrayColor};
+    background-color: white;
+    border-radius: 1rem;
+    // position: absolute;
+    opacity: 0.75;
+    transition: all 0.8s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.05);
+        opacity: 1;
+    }
+`;
+const RemoveBtnIcon = styled.div`
+    width: 1.8rem;
+    height: 0.6rem;
+    // border: 1px solid black;
+    background-color: red;
+`;
 const SelectedImgListContainer = styled.div`
     width: calc(100% - 5rem);
-    min-height: 23.28rem;
+    min-height: 20.28rem;
     max-height: 35rem;
     border-radius: 0.5rem;
     box-shadow: 0 0.4rem 1.2rem 0 rgba(0, 0, 0, 0.25);
@@ -68,6 +93,7 @@ const ImageWrapper = styled.div`
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 0.4rem 1.2rem 0 rgba(0, 0, 0, 0.25);
+    position: relative;
     @media screen and (max-width: 1024px) {
         width: 18rem;
         height: 18rem;
@@ -84,30 +110,37 @@ const Image = styled.img`
     flex-shrink: 0;
 `;
 
-export default function FileImageInputWrapper01() {
+export default function FileImageInputWrapper01(props) {
     const fileRef = useRef(null);
+    const [selectedImages, setSelectedImages] = props.imageList;
+    // const [selectedImages, setSelectedImages] = useState(props.imageList);
+
     const handleFileClick = () => {
         fileRef.current.click();
     };
+
     const handleFileChange = (e) => {
-        // const files = e.target.files;
-        // const imagesArr = [];
-        // // console.log(files);
-        // for (let i = 0; i < files.length; i++) {
-        //     console.log(files[i].name);
-        //     imagesArr.push(files[i].name);
-        // }
-        // console.log(imagesArr);
+        const files = e.target.files;
+        const newImages = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileName = file.name;
+            const fileUrl = URL.createObjectURL(file);
 
-        // const files = e.target.files;
-        // const imagesArr = [];
-
-        // for (let i = 0; i < files.length; i++) {
-        //     imagesArr.push(URL.createObjectURL(files[i])); // 파일의 경로를 사용하여 이미지를 표시할 수 있도록 수정
-        // }
-        // console.log(imagesArr);
-
+            // 이미 선택된 파일 이름이 아니라면 추가
+            if (!selectedImages.some((selectedImage) => selectedImage.fileName === fileName)) {
+                newImages.push({ fileName, fileUrl });
+            }
+        }
+        setSelectedImages((prevImageList) => [...prevImageList, ...newImages]);
     };
+
+    const handleFileRemove = (fileName) => {
+        setSelectedImages((prevImageList) =>
+            prevImageList.filter((image) => image.fileName !== fileName)
+        );
+    };
+
     return (
         <FileImageInputWrapper>
             <AddBtnContainer onClick={handleFileClick}>
@@ -120,30 +153,16 @@ export default function FileImageInputWrapper01() {
                 ></HideInput>
             </AddBtnContainer>
             <SelectedImgListContainer>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
-                <ImageWrapper>
-                    <Image src="/images/house1.jpeg"></Image>
-                </ImageWrapper>
+                {
+                    selectedImages.map((image, index) => (
+                        <ImageWrapper key={index}>
+                            <Image src={image.fileUrl} alt={image.fileName}></Image>
+                            <RemoveBtnContainer onClick={() => (handleFileRemove(image.fileName))}>
+                                <RemoveBtnIcon></RemoveBtnIcon>
+                            </RemoveBtnContainer>
+                        </ImageWrapper>
+                    ))
+                }
             </SelectedImgListContainer>
         </FileImageInputWrapper>
     )
