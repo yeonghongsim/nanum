@@ -37,21 +37,6 @@ MongoClient.connect('mongodb+srv://admin:qwer1234@cluster0.qme18ml.mongodb.net/?
 
     })
 
-// 테스트 용
-app.get('/checkId/:imsiId', async function (req, res) {
-    try {
-        console.log('Received a checkId request from the front end.');
-        db.collection('users').findOne({ userId: req.params.imsiId }, function (error, result) {
-            console.log(result)
-            res.send({ result: result })
-        })
-    }
-    catch (error) {
-        console.error('Error processing signUp request:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-})
-
 // 사용자 회원가입 코드
 app.post('/signUp', async function (req, res) {
     try {
@@ -79,7 +64,6 @@ app.post('/signUp', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
 // 사용자 로그인 코드
 app.get('/login', async function (req, res) {
     try {
@@ -96,7 +80,6 @@ app.get('/login', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
 // 아이템 목록 코드
 app.get('/itemType', async function (req, res) {
     try {
@@ -109,7 +92,6 @@ app.get('/itemType', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
 // 사용자 측 나눔 물건 등록 코드
 app.post('/users/registerItem', async function (req, res) {
     // console.log(req.body);
@@ -143,7 +125,6 @@ app.post('/users/registerItem', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
 // 사용자 측 등록한 물건 목록 조회
 app.get('/users/itemList/:userId', async function (req, res) {
     try {
@@ -155,4 +136,22 @@ app.get('/users/itemList/:userId', async function (req, res) {
         console.error('Error getting itemType data:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
+});
+// 물건 상세 조회
+app.get('/itemDetail/:itemId', async function (req, res) {
+    console.log('itemDetail fetching start');
+    const itemId = req.params.itemId;
+    try {
+        console.log('itemDetail processing start');
+        db.collection('items').findOne({ _id: new ObjectId(itemId) }, function (error, result) {
+            console.log(result)
+            res.send({ result: result })
+        })
+        console.log('itemDetail processing end');
+    }
+    catch (error) {
+        console.error('Error processing signUp request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+    console.log('itemDetail fetching end');
 });

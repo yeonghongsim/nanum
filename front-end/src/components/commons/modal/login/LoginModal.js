@@ -26,6 +26,7 @@ const Wrapper = styled.div`
     opacity: ${(props) => (props.isLoginModalOpen ? 1 : 0)};
     padding: 0 1rem 2rem 1rem;
     transition: all 1.3s ease-in-out;
+    z-index: 200;
 `;
 const ProfileWrapper = styled.div`
     width: 100%;
@@ -106,12 +107,13 @@ export default function LoginModal(props) {
 
     const modalRef = useRef(null);
 
+    const { isLoginModalOpen, handleModalClose } = props;
     useEffect(() => {
         let handleClickOutside;
-        if (props.isLoginModalOpen) {
+        if (isLoginModalOpen) {
             handleClickOutside = (e) => {
                 if (modalRef.current && !modalRef.current.contains(e.target)) {
-                    props.handleModalClose();
+                    handleModalClose();
                 }
             };
             window.addEventListener("click", handleClickOutside);
@@ -120,8 +122,8 @@ export default function LoginModal(props) {
             window.removeEventListener("click", handleClickOutside);
         }
     }, [
-        props.isLoginModalOpen
-        , props.handleModalClose
+        isLoginModalOpen
+        , handleModalClose
         , modalRef
     ]);
 

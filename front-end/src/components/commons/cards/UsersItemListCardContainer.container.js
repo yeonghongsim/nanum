@@ -138,8 +138,9 @@ export default function UsersItemListCardContainer({ item, ...props }) {
         setCurrentIndex((prevIndex) => (prevIndex < item.imageList.length - 1 ? prevIndex + 1 : 0));
     };
     const navigate = useNavigate();
-    const handleItemId = (id) => {
-        navigate(`/users/item/${id}`);
+    const handleItemId = (itemId) => {
+        // navigate(`/itemDetail/${id}`);
+        navigate(`/itemDetail/${itemId}`);
     };
 
     return (
@@ -150,7 +151,7 @@ export default function UsersItemListCardContainer({ item, ...props }) {
                         item.imageList.map((image, index) => (
                             <CardImg
                                 key={index}
-                                src={image.fileUrl.startsWith('blob:') ? image.file : image.fileUrl}
+                                src={image.fileUrl}
                                 alt={image.fileName}
                                 onClick={() => handleItemId(item._id)}
                             ></CardImg>

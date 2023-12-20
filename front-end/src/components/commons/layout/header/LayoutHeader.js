@@ -34,7 +34,6 @@ const LoginWrapper = styled.div`
     align-items: center;
     justify-content: flex-end;
     position: relative;
-    padding: 0 8rem 0 8rem;
     box-sizing: border-box;
     @media screen and (max-width: 1024px) {
         padding: 0 2rem 0 2rem;
