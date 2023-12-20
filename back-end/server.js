@@ -5,8 +5,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 app.use(cors());
 // bodyparser 사용 설정
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); // JSON 형태의 body를 파싱할 수 있도록 설정
+// app.use(bodyParser.json()); // JSON 형태의 body를 파싱할 수 있도록 설정
+// app.use(bodyParser.urlencoded({ extended: true }));
+// -- gpt에서 알려준 코드
+// body-parser 미들웨어를 사용하여 허용되는 페이로드 크기 설정
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // ejs 사용 설정
 app.set('view engine', 'ejs');
 require('dotenv').config();
@@ -107,10 +111,11 @@ app.get('/itemType', async function (req, res) {
 });
 
 // 사용자 측 나눔 물건 등록 코드
-app.post('/users/resisterItem', async function (req, res) {
-    console.log(req.body);
+app.post('/users/registerItem', async function (req, res) {
+    // console.log(req.body);
+    console.log('/users/registerItem start.');
     try {
-        console.log('Received a resisterItem request from the front end.');
+        console.log('registerItem processing start');
         // 여기에서 실제로 데이터베이스에 데이터를 추가하는 등의 작업 수행 가능
         db.collection('items').insertOne({
             // 저장할 데이터 정리

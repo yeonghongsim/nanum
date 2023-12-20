@@ -11,6 +11,7 @@ import UsersProfileFormPage from './components/views/users/profile/UsersProfileF
 import UsersItemListPage from './components/views/users/itemList/UsersItemListPage';
 import UsersRegisterItemPage from './components/views/users/registerItem/UsersRegisterItemPage';
 import Test1 from './components/views/test/Test1';
+import Test2 from './components/views/test/Test2';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -35,6 +36,9 @@ function App() {
         }></Route>
         <Route path='/test1' element={
           <Test1></Test1>
+        }></Route>
+        <Route path='/test2' element={
+          <Test2 />
         }></Route>
         <Route path='/users'>
           <Route path='profile' element={<UsersProfilePage></UsersProfilePage>}></Route>

@@ -60,11 +60,12 @@ export default function ResisterItemModal({ isOn, setIsOnModal, content, prepare
         console.log(preparedData);
         // DB에 데이터 등록 후 페이지 이동
         try {
-            const response = await fetch('http://localhost:8080/users/resisterItem', {
+            const response = await fetch('http://localhost:8080/users/registerItem', {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
+
                 },
                 body: JSON.stringify(preparedData)
             })
@@ -77,6 +78,7 @@ export default function ResisterItemModal({ isOn, setIsOnModal, content, prepare
             }
             else { console.log('fail') }
         } catch (error) { console.log('통신 오류: ', error) }
+
     };
     useEffect(() => {
         const handleOutsideClick = (e) => {
