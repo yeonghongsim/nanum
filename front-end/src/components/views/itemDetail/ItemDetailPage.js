@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Spinner from "../../commons/hooks/Spinner";
 import { COLORS } from "../../../commons/styles/COLORS";
+import ItemDetailMoreImgModal from "../../commons/modal/itemDetail/ItemDetailMoreImgModal";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -80,7 +81,6 @@ const ImageRightSmallContainer = styled.div`
 const ImageWrapper = styled.div`
     width: 100%;
     height: 100%;
-    background-color: #eee;
     border-radius: 0.5rem;
 `;
 const Image = styled.img`
@@ -230,6 +230,14 @@ export default function ItemDetailPage() {
         // fetchUserItems를 의존성 배열에 추가
         fetchItemDetail();
     }, [itemId]);
+    // modal 관련 변수들
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleModalOpen = () => {
+        setIsModalOpen(true);
+    };
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <Wrapper>
@@ -243,40 +251,40 @@ export default function ItemDetailPage() {
                                 <ImageLeftContainer>
                                     <ImageWrapper>
                                         <Image
-                                            // src={item.imageList[0].fileURL}
-                                            // alt={item.imageList[0].fileName}
-                                            src="/images/house2.jpeg"
+                                            src={item.imageList[0].fileUrl}
+                                            alt={item.imageList[0].fileName}
                                         ></Image>
                                     </ImageWrapper>
                                 </ImageLeftContainer>
                                 <ImageRightContainer>
-                                    <ImageRightSmallContainer>
-                                        <ImageWrapper>
-                                            <Image src="/images/house2.jpeg"></Image>
-                                        </ImageWrapper>
-                                    </ImageRightSmallContainer>
-                                    <ImageRightSmallContainer>
-                                        <ImageWrapper>
-                                            <Image src="/images/house3.jpeg"></Image>
-                                        </ImageWrapper>
-                                    </ImageRightSmallContainer>
-                                    <ImageRightSmallContainer>
-                                        <ImageWrapper>
-                                            <Image src="/images/house4.jpeg"></Image>
-                                        </ImageWrapper>
-                                    </ImageRightSmallContainer>
-                                    <ImageRightSmallContainer>
-                                        <ImageWrapper>
-                                            <Image src="/images/house5.jpeg"></Image>
-                                        </ImageWrapper>
-                                    </ImageRightSmallContainer>
+                                    {item.imageList.length > 1 && (
+                                        <>
+                                            {item.imageList.slice(1, 5).map((image, index) => (
+                                                <ImageRightSmallContainer key={index}>
+                                                    <ImageWrapper>
+                                                        <Image
+                                                            src={image.fileUrl}
+                                                            alt={image.fileName}
+                                                        />
+                                                    </ImageWrapper>
+                                                </ImageRightSmallContainer>
+                                            ))}
+                                        </>
+                                    )}
                                 </ImageRightContainer>
                                 {
-                                    item.imageList.length > 5 ?
-                                        <MoreImageBtnDiv>
+                                    item.imageList.length > 5 && (
+                                        <MoreImageBtnDiv onClick={handleModalOpen}>
                                             <MoreText>더보기</MoreText>
-                                        </MoreImageBtnDiv> : null
+                                        </MoreImageBtnDiv>
+                                    )
                                 }
+                                <ItemDetailMoreImgModal
+                                    isOn={isModalOpen}
+                                    setIsModalOpen={setIsModalOpen}
+                                    handleModalClose={handleModalClose}
+                                    imageList={item.imageList.slice(5)}
+                                ></ItemDetailMoreImgModal>
                             </ImageContainer>
                             <InfoContainer>
                                 <ContactInfoContainer>
@@ -286,15 +294,11 @@ export default function ItemDetailPage() {
                                     <SimpleInfoDiv>
                                         {item.title}
                                     </SimpleInfoDiv>
-                                    {
-                                        userInfo == null ?
-                                            null :
-                                            <>
-                                                <SimpleInfoDiv>
-                                                    {item.phoneNumber}
-                                                </SimpleInfoDiv>
-                                            </>
-                                    }
+                                    {userInfo && (
+                                        <SimpleInfoDiv>
+                                            {item.phoneNumber}
+                                        </SimpleInfoDiv>
+                                    )}
                                 </ContactInfoContainer>
                                 <ItemInfoContainer>
                                     <DetailInfoDiv>
