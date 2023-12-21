@@ -36,6 +36,20 @@ MongoClient.connect('mongodb+srv://admin:qwer1234@cluster0.qme18ml.mongodb.net/?
         });
 
     })
+// 아이디 확인 용
+app.get('/checkId/:imsiId', async function (req, res) {
+    try {
+        console.log('Received a checkId request from the front end.');
+        db.collection('users').findOne({ userId: req.params.imsiId }, function (error, result) {
+            console.log(result)
+            res.send({ result: result })
+        })
+    }
+    catch (error) {
+        console.error('Error processing signUp request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
 
 // 사용자 회원가입 코드
 app.post('/signUp', async function (req, res) {
@@ -48,7 +62,8 @@ app.post('/signUp', async function (req, res) {
             userName: req.body.userName,
             birthday: req.body.birthday,
             phoneNumber: req.body.phoneNumber,
-            profileImg: req.body.profileImg
+            profileImgURL: req.body.profileImgURL,
+            profileImgName: req.body.prifileImgName,
         }, function (error, result) {
             if (error) {
                 console.error('Error inserting data into the database:', error);

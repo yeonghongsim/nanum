@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import { COLORS } from "../../../../commons/styles/COLORS";
-// import { useRef } from "react";
 import { useEffect, useRef } from "react";
 
 const Wrapper = styled.div`
@@ -63,10 +62,10 @@ const CloseBtn = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 15rem;
-    height: 5rem;
+    width: 12rem;
+    height: 4rem;
     border-radius: 1rem;
-    background-color: ${COLORS.lightgrayColor};
+    background-color: ${COLORS.middlegrayColor};
     color: white;
     position: absolute;
     bottom: 1rem;

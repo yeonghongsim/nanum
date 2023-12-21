@@ -152,8 +152,6 @@ export default function FileImageInputWrapper01(props) {
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileName = file.name;
-            // const fileUrl = URL.createObjectURL(file);
-
             // 이미 선택된 파일 이름이 아니라면 추가
             if (!selectedImages.some((selectedImage) => selectedImage.fileName === fileName)) {
                 // 이미지 압축 후 Base64로 인코딩

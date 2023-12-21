@@ -33,7 +33,7 @@ const Input = styled.input`
     color: ${COLORS.middlegrayColor};
 `;
 
-export default function InputWithLabel02(props) {
+export default function InputWithLabel02({ forwardedRef, ...props }) {
     let modifiedPlaceholder = props.placeHolder;
 
     if (props.phoneNumber === 'phoneNumber') {
@@ -48,6 +48,7 @@ export default function InputWithLabel02(props) {
                 <Input
                     type={props.inputType}
                     placeholder={modifiedPlaceholder}
+                    ref={forwardedRef}
                 ></Input>
             </InputWrapper>
         </Wrapper>

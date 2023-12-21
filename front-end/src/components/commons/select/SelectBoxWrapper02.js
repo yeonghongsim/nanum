@@ -47,8 +47,11 @@ const Options = styled.div`
     box-sizing: border-box;
     color: ${COLORS.middlegrayColor};
 `;
+const HideInput = styled.input`
+    display: none;
+`;
 
-export default function SelectBoxWrapper02(props) {
+export default function SelectBoxWrapper02({ forwardedRef, ...props }) {
     const selectBoxRef = useRef(null);
     const [isOn, setIsOn] = useState(false);
     const [selectOption, setSelectOption] = useState(props.defaultValue);
@@ -75,7 +78,8 @@ export default function SelectBoxWrapper02(props) {
 
     return (
         <SelectBoxWrapper ref={selectBoxRef}>
-            <SelectBox onClick={handleSelectClick}>{selectOption}</SelectBox>
+            <SelectBox onClick={handleSelectClick} ref={forwardedRef}>{selectOption}</SelectBox>
+            <HideInput ref={forwardedRef} value={selectOption}></HideInput>
 
             <OptionWrapper isOn={isOn}>
                 {

@@ -29,7 +29,7 @@ const SelectBox = styled.div`
     box-sizing: border-box;
 `;
 
-export default function SelectBoxWithLabel02(props) {
+export default function SelectBoxWithLabel02({ forwardedRef, ...props }) {
 
     return (
         <SelectBoxContainer>
@@ -40,6 +40,7 @@ export default function SelectBoxWithLabel02(props) {
                 <SelectBoxWrapper02
                     options={props.options}
                     defaultValue={props.defaultValue}
+                    forwardedRef={forwardedRef}
                 ></SelectBoxWrapper02>
             </SelectBox>
         </SelectBoxContainer>

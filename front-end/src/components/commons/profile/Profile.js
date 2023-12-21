@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { COLORS } from "../../../commons/styles/COLORS";
+import { useSelector } from "react-redux";
 
 const ProfileIconWrapper = styled.div`
     width: 5rem;
@@ -16,6 +17,10 @@ const Icon = styled.img`
 `;
 
 export default function ProfileIcon(props) {
+    // 회원정보 조회
+    const userInfo = useSelector((state) => state.user.user);
+    // console.log(userInfo);
+
     const handleClick = (e) => {
         e.stopPropagation();
         props.setIsLoginModalOpen(!props.isLoginModalOpen);
@@ -23,16 +28,14 @@ export default function ProfileIcon(props) {
 
     return (
         <ProfileIconWrapper onClick={handleClick} style={{ cursor: props.cursorStyle }}>
-            <Icon src="/icons/icon_profile.svg"></Icon>
+            {
+                userInfo === null || userInfo?.profileImgURL === null ?
+                    <Icon src="/icons/icon_profile.svg"></Icon> :
+                    <Icon
+                        src={userInfo?.profileImgURL}
+                        alt={userInfo?.profileImgName}
+                    ></Icon>
+            }
         </ProfileIconWrapper>
     )
-    // const handleClick = () => {
-    //     props.setIsLoginModalOpen(!props.isLoginModalOpen);
-    // };
-
-    // return (
-    //     <ProfileIconWrapper onClick={handleClick} style={{ cursor: props.cursorStyle }}>
-    //         <Icon src="/icons/icon_profile.svg"></Icon>
-    //     </ProfileIconWrapper>
-    // )
 }

@@ -7,7 +7,7 @@ import InputWithLabel02Ref from "../../commons/input/InputWithLabel02Ref";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from "../../../commons/store/store";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { setUser } from "../../../commons/store/userSlice";
 
 const Container = styled.div`
@@ -55,7 +55,7 @@ const BtnWrapper = styled.div`
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const userIdRef = useRef(null);
     const userPwRef = useRef(null);
@@ -138,7 +138,9 @@ export default function LoginPage() {
                         userId: data.result.userId,
                         userName: data.result.userName,
                         birthday: data.result.birthday,
-                        phoneNumber: data.result.phoneNumber
+                        phoneNumber: data.result.phoneNumber,
+                        profileImgURL: data.result.profileImgURL,
+                        profileImgName: data.result.profileImgName,
                     }
                     // console.log(userInfo);
                     // store에 저장

@@ -238,6 +238,7 @@ export default function ItemDetailPage() {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
+    // console.log(item.imageList)
 
     return (
         <Wrapper>

@@ -40,8 +40,9 @@ const LoginWrapper = styled.div`
     }
 `;
 export default function LayoutHeader() {
+    // login modal
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
+    // modal close
     const handleModalClose = useCallback(() => {
         setIsLoginModalOpen(false);
     }, []);

@@ -191,7 +191,8 @@ export default function SignUpPage() {
                 userName: userName,
                 birthday: birthday,
                 phoneNumber: phoneNumber,
-                profileImg: "null"
+                profileImgURL: null,
+                profileImgName: null,
             };
             // setPrepareData(data);
             handleSignUp(data);
