@@ -2,6 +2,10 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../../../commons/styles/COLORS";
 import RectangleBtn03 from "../../button/RectangleBtn03";
+import { useSelector } from "react-redux";
+import store from "../../../../commons/store/store";
+import { setUser } from "../../../../commons/store/userSlice";
+
 
 const Wrapper = styled.div`
     width: 100%;
@@ -13,6 +17,7 @@ const Wrapper = styled.div`
     display: ${(props) => (props.isOn ? 'flex' : 'none')};
     align-items: center;
     justify-content: center;
+    z-index: 200;
 `;
 const Content = styled.div`
     width: 100rem;
@@ -50,6 +55,16 @@ const ModalBody = styled.div`
     padding: 1rem;
     box-sizing: border-box;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2rem;
+`;
+const BodyText = styled.p`
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
 `;
 const BtnContainer = styled.div`
     width: 100%;
@@ -82,6 +97,9 @@ export default function UersUpdateModal({
     preparedData,
     ...props
 }) {
+    // 회원정보 조회
+    const userInfo = useSelector((state) => state.user.user);
+    // console.log(userInfo);
     // 모달 ref
     const modalRef = useRef(null);
     // 모달 외각 클릭 시 모달 닫힘 함수
@@ -99,9 +117,97 @@ export default function UersUpdateModal({
             document.removeEventListener("mousedown", handleOutsideClick);
         };
     }, [setIsOpenModal]);
-    // http 통신 전 업데이트할 데이터 확인 콘솔
-    console.log(preparedData);
-    // fetch post 함수 코드 예정.
+    // 전달받은 whatBtn 에 따라 코드 실행 다르게
+    // whatBtn - profile
+    let handleUpdateUserInfo;
+    // whatBtn - logInfo
+    let handleUpdateLogInfo;
+    if (preparedData.whatBtn === 'profile') {
+        // fetch post 함수. - 프로필 정보
+        handleUpdateUserInfo = async () => {
+            // 각각의 데이터
+            let userName = preparedData.userName;
+            let phoneNumber = preparedData.brandNumber + '-'
+                + preparedData.middleNumber + '-'
+                + preparedData.lastNumber;
+            let profileImgName = preparedData.profileImgName;
+            let profileImgURL = preparedData.profileImgURL;
+            const userObjectId = userInfo._id;
+            // console.log(userObjectId);
+            // 변경사항 3가지 ( 이미지, 이름, 연락처 )
+            // 이미지 변경 하지 않는 경우
+            // if (preparedData.profileImgURL === null) {
+            // }
+            // 이름 변경 하지 않는 경우
+            if (userName === '') {
+                userName = userInfo.userName;
+            }
+            // 연락처 변경 하지 않는 경우
+            if (phoneNumber.length === 5) {
+                phoneNumber = userInfo.phoneNumber;
+            }
+            // 데이터 저장 통
+            const data = {
+                profileImgName: profileImgName,
+                profileImgURL: profileImgURL,
+                userName: userName,
+                phoneNumber: phoneNumber,
+                userObjectId: userObjectId,
+            }
+            // console.log(data);
+            // -- 변경 사항 업데이트 통신 시작
+            // 통신 url
+            const fetchUrl = `http://localhost:8080/users/${userObjectId}/updateProfile`;
+            // method, headers, body,
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 기타 필요한 헤더 설정 가능
+                },
+                body: JSON.stringify(data),
+            };
+            // fetch
+            fetch(fetchUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                    // 업데이트 성공 후 로직 코드 예정
+                    console.log('Response:', data.updatedUser);
+                    // 데이터 셋업
+                    const updatedUser = {
+                        _id: data.updatedUser._id,
+                        userId: data.updatedUser.userId,
+                        userName: data.updatedUser.userName,
+                        birthday: data.updatedUser.birthday,
+                        phoneNumber: data.updatedUser.phoneNumber,
+                        profileImgURL: data.updatedUser.profileImgURL,
+                        profileImgName: data.updatedUser.profileImgName,
+                    }
+                    // // store에 저장
+                    store.dispatch(setUser(updatedUser));
+                    // 페이지 변경 로직
+                    window.location.href = '/users/profile';
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    }
+    if (preparedData.whatBtn === 'logInfo') {
+        // 콘솔 확인
+        console.log('user Id check');
+        if (preparedData.userId !== '') {
+            console.log(preparedData.userId);
+        }
+        // 중복 아이디 확인.
+        // const possibleId = '';
+        // 중복 시 뒤로가기
+        // fetch post 함수. - 프로필 정보
+        handleUpdateLogInfo = async () => {
+            alert(111);
+        };
+    }
+    // 세팅한 데이터 확인 콘솔
+    // console.log(preparedData);
 
     return (
         <Wrapper isOn={isOn}>
@@ -112,7 +218,45 @@ export default function UersUpdateModal({
                     </TextHead>
                 </ModalHead>
                 <ModalBody>
-                    변경된 내용 보여주기
+                    {
+                        preparedData.whatBtn === 'profile' ?
+                            <>
+                                <BodyText>
+                                    프로필 이미지 :
+                                    {
+                                        props.changeProfileImg
+                                            ? ' O ' : ' X '
+                                    }
+                                </BodyText>
+                                <BodyText>
+                                    이름 :
+                                    {
+                                        preparedData.userName === ''
+                                            ? ' X ' : <> {preparedData.userName} </>
+                                    }
+                                </BodyText>
+                                <BodyText>
+                                    휴대전화 :
+                                    {
+                                        preparedData.middleNumber === ''
+                                            ? ' X ' : <> {preparedData.brandNumber + '-'
+                                                + preparedData.middleNumber + '-'
+                                                + preparedData.lastNumber} </>
+                                    }
+                                </BodyText>
+                            </>
+                            : <>
+                                <BodyText>
+                                    아이디 중복 여부 : {preparedData.userId}
+                                </BodyText>
+                                <BodyText>
+                                    아이디 변경 : {preparedData.userId}
+                                </BodyText>
+                                <BodyText>
+                                    비밀번호 변경 : {preparedData.userPw}
+                                </BodyText>
+                            </>
+                    }
                     <AskUpdateText>
                         입니다. 정말로 변경하시겠습니까?
                     </AskUpdateText>
@@ -126,10 +270,19 @@ export default function UersUpdateModal({
                         ></RectangleBtn03>
                     </BtnWrapper>
                     <BtnWrapper>
-                        <RectangleBtn03
-                            backgroundColor={COLORS.linkColor}
-                            content='변경하기'
-                        ></RectangleBtn03>
+                        {
+                            preparedData.whatBtn === 'profile' ?
+                                <RectangleBtn03
+                                    backgroundColor={COLORS.linkColor}
+                                    content='변경하기'
+                                    onClick={handleUpdateUserInfo}
+                                ></RectangleBtn03> :
+                                <RectangleBtn03
+                                    backgroundColor={COLORS.linkColor}
+                                    content='변경하기'
+                                    onClick={handleUpdateLogInfo}
+                                ></RectangleBtn03>
+                        }
                     </BtnWrapper>
                 </BtnContainer>
             </Content>

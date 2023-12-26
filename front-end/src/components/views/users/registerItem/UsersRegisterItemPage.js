@@ -228,15 +228,12 @@ export default function UsersRegisterItemPage() {
         // 만약 이상 있을 시 return 종료.
         if (
             imageList[0].length === 0 ||
-            // (imageList[0].length === 0 && isErrImageList) ||
             (!itemName.trim() === '' || !itemNameValidationRegex.test(itemName)) ||
             (!title.trim() || /^\s+|\s+$/.test(title)) ||
             (!locateCity.trim() || !/^[가-힣]+$/.test(locateCity) || /^\s+|\s+$/.test(locateCity)) ||
             (!locateGu.trim() || !/^[가-힣]+$/.test(locateGu) || /^\s+|\s+$/.test(locateGu)) ||
             (!locateRoad.trim() || !/^[\s가-힣0-9]+$/.test(locateRoad) || /^\s+|\s+$/.test(locateRoad)) ||
             itemTypeList[0].length === 0
-            // itemTypeList[0].length === 0 ||
-            // (itemTypeList[0].length === 0 && isErrItemTypeList)
         ) {
             return;
         }

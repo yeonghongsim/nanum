@@ -185,16 +185,26 @@ export default function UsersProfileFormPage(props) {
     // 사진 선택
     const [selectedImg, setSelectedImg] = useState(profileImage);
     // 사진 선택 유무
-    const [isSelectedImg, setIsSelectedImg] = useState(false);
+    let noneProfileImg;
+    if (profileImage === '/icons/icon_profile.svg') {
+        noneProfileImg = false;
+    } else {
+        noneProfileImg = true;
+    }
+    const [isSelectedImg, setIsSelectedImg] = useState(noneProfileImg);
     // refs
     const fileInputRef = useRef(null);
     const userNameRef = useRef(null);
     const brandNumberRef = useRef(null);
     const phoneNumberRef = useRef(null);
+    const userIdRef = useRef(null);
+    const userPwRef = useRef(null);
     const [userProfileImage, setUserProfileImage] = useState({
         fileURL: null,
         fileName: null
     });
+    // 파일 이미지 변경 유무
+    const [changeProfileImg, setChangeProfileImg] = useState(false);
     // 파일 버튼 클릭
     const handleFileClick = () => {
         fileInputRef.current.click();
@@ -207,6 +217,11 @@ export default function UsersProfileFormPage(props) {
             fileURL: null,
             fileName: null
         });
+        if (userInfo.profileImgURL === null) {
+            setChangeProfileImg(false);
+        } else {
+            setChangeProfileImg(true);
+        }
     };
     // Blob 데이터를 Base64로 인코딩하는 함수
     const readFileAsDataURL = (file) => {
@@ -249,6 +264,11 @@ export default function UsersProfileFormPage(props) {
                         fileURL: fileUrl,
                         fileName: file.name
                     });
+                    if (userInfo.profileImgName === file.name) {
+                        setChangeProfileImg(false);
+                    } else {
+                        setChangeProfileImg(true);
+                    }
                 } else {
                     // 압축에 실패한 경우에 대한 처리 (예: 알림, 기타 로직 추가)
                     console.error('이미지 압축에 실패했습니다.');
@@ -258,25 +278,22 @@ export default function UsersProfileFormPage(props) {
             }
         }
     };
-    // profile post funcion
-    // const handleProfileUpdate = () => {
-    //     const prevPhoneNumber = phoneNumberRef.current.value;
-    //     const data = {
-    //         userName: userNameRef.current.value,
-    //         brandNumber: brandNumberRef.current.value,
-    //         middleNumber: prevPhoneNumber.slice(0, 4),
-    //         lastNumber: prevPhoneNumber.slice(4,),
-    //         profileImgName: userProfileImage.fileName,
-    //         profileImgURL: userProfileImage.fileURL,
-    //     };
-    //     alert(JSON.stringify(data));
-    // };
-
     // 데이터 준비 및 유효성 검사, 모달 관련 코드 진행.
     // 데이터 통 변수
     const [preparedData, setPreparedData] = useState({});
     // 유효성 검사 및 부적합 결과를 위한 변수
-    // ---변수 예정.
+    // 유저 이름 변수
+    const [isErrUserName, setIsErrUserName] = useState(false);
+    const [errMsgUserName, setErrMsgUserName] = useState('');
+    // 유저 전화번호 변수
+    const [isErrPhoneNumber, setIsErrPhoneNumber] = useState(false);
+    const [errMsgPhoneNumber, setErrMsgPhoneNumber] = useState('');
+    // 유저 아이디 변수
+    const [isErrUserId, setIsErrUserId] = useState(false);
+    const [errMsgUserId, setErrMsgUserId] = useState('');
+    // 유저 비밀번호 변수
+    const [isErrUserPw, setIsErrUserPw] = useState(false);
+    const [errMsgUserPw, setErrMsgUserPw] = useState('');
     // 모달 여/닫 변수
     const [isOpenModal, setIsOpenModal] = useState(false);
     // 모달 열기 함수
@@ -285,18 +302,58 @@ export default function UsersProfileFormPage(props) {
         // 구분 조건 ( 프로필 수정 버튼 클릭 시 )
         if (what === 'profile') {
             // 가져온 데이터를 변수에 저장
-            const prevPhoneNumber = phoneNumberRef.current.value;
             const userName = userNameRef.current.value;
             const brandNumber = brandNumberRef.current.value;
+            const prevPhoneNumber = phoneNumberRef.current.value;
             const profileImgName = userProfileImage.fileName;
             const profileImgURL = userProfileImage.fileURL;
             // 데이터 유효성 검사 시작.
             // 1. 이름은 한글만 입력 가능.
-            // -- 코드예정
+            // 단, 빈 값이어도 괜찮.
+            if (
+                // userName !== '' &&
+                // (!/^[가-힣]+$/.test(userName) || /\s/.test(userName))
+                (userName !== '' &&
+                    (!/^[가-힣]+$/.test(userName) || /\s/.test(userName) || userName.length < 2 || userName.length > 40))
+            ) {
+                setIsErrUserName(true);
+                setErrMsgUserName('한글만 입력 가능하며, 빈 공백을 확인해주세요.');
+            } else {
+                setIsErrUserName(false);
+                setErrMsgUserName('');
+            }
             // 2. 전화번호는 숫자만 입력 가능.
-            // -- 코드예정
+            if (
+                prevPhoneNumber !== '' &&
+                prevPhoneNumber.length !== 8 &&
+                (!/^[0-9]]+$/.test(prevPhoneNumber) || /\s/.test(prevPhoneNumber))
+            ) {
+                setIsErrPhoneNumber(true);
+                setErrMsgPhoneNumber('숫자 8자리로 입력해주세요.');
+            } else {
+                setIsErrPhoneNumber(false);
+                setErrMsgPhoneNumber('');
+            }
             // 유효성 검사 부적합 시 진행할 코드.
-            // -- 코드예정
+            if (
+                // (userName !== ''
+                //     && (!/^[가-힣]+$/.test(userName) || /\s/.test(userName))) ||
+                (userName !== '' &&
+                    (!/^[가-힣]+$/.test(userName) || /\s/.test(userName) || userName.length < 2 || userName.length > 40)) ||
+                (prevPhoneNumber !== ''
+                    && prevPhoneNumber.length !== 8
+                    && (!/^[0-9]]+$/.test(prevPhoneNumber) || /\s/.test(prevPhoneNumber)))
+            ) {
+                return;
+            }
+            // 변경 사항이 없는 경우
+            if (
+                !changeProfileImg
+                && userName === ''
+                && prevPhoneNumber === ''
+            ) {
+                return;
+            }
             // 데이터 유효성 검사 끝.
             // 변수 통합하기
             const data = {
@@ -306,8 +363,8 @@ export default function UsersProfileFormPage(props) {
                 lastNumber: prevPhoneNumber.slice(4,),
                 profileImgName: profileImgName,
                 profileImgURL: profileImgURL,
+                whatBtn: what
             };
-            // console.log(data);
             // 준비한 데이터 저장
             setPreparedData(data);
             // 모달 열기
@@ -315,7 +372,61 @@ export default function UsersProfileFormPage(props) {
         }
         // 구분 조건 ( 회원정보 수정 버튼 클릭 시 )
         if (what === 'logInfo') {
-            alert('logInfo');
+            // 가져온 데이터를 변수에 저장
+            const userIdInput = userIdRef.current.value;
+            const userPwInput = userPwRef.current.value;
+            // 데이터 유효성 검사 시작.
+            // 변경 사항이 없는 경우
+            if (
+                userIdInput === ''
+                && userPwInput === ''
+            ) {
+                setIsErrUserId(false);
+                setIsErrUserPw(false);
+                return;
+            }
+            // 영어 숫자 만 가능
+            const idValid = /^[a-zA-Z\d]+$/.test(userIdInput);
+            if (!idValid || userIdInput.length > 30) {
+                setIsErrUserId(true);
+                setErrMsgUserId('30자 이내의 영문,숫자만 입력가능합니다.');
+            } else {
+                setIsErrUserId(false);
+                setErrMsgUserId('');
+            }
+            // // 특수기호,영문,숫자 혼합 10자리 이상인지 확인
+            // const pwValid = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[a-zA-Z])(?=.*\d).{0,}$/.test(userPwInput);
+            // // 2. 비밀번호 영문,숫자,특수문자만 입력 가능. 한글 입력시 검사 실패
+            // if (!pwValid) {
+            // setIsErrUserPw(true);
+            // setErrMsgUserPw('숫자 8자리로 입력해주세요.');
+            // } else {
+            // setIsErrUserPw(false);
+            // setErrMsgUserPw('');
+            // }
+            // const pwValid = /^[\d]+$/.test(userPwInput);
+            // if (!pwValid) {
+            //     setIsErrUserPw(true);
+            //     setErrMsgUserPw('숫자 8자리로 입력해주세요.');
+            // } else {
+            //     setIsErrUserPw(false);
+            //     setErrMsgUserPw('');
+            // }
+            // 유효성 검사 부적합 시 진행할 코드.
+            if (!idValid || userIdInput.length > 30) {
+                return;
+            }
+            // 유효성 검사 끝 ( 통과 )
+            // 변수 통합하기
+            const data = {
+                userId: userIdInput,
+                userPw: userPwInput,
+                whatBtn: what
+            };
+            // 준비한 데이터 저장
+            setPreparedData(data);
+            // 모달 열기
+            setIsOpenModal(true);
         }
     };
     // 모달 닫기 함수
@@ -343,8 +454,7 @@ export default function UsersProfileFormPage(props) {
                                             backgroundColor='red'
                                         >
                                             <AddBtnIcon src="/icons/icon_minus.svg"></AddBtnIcon>
-                                        </ImgBtnContainer>
-                                        :
+                                        </ImgBtnContainer> :
                                         <ImgBtnContainer
                                             onClick={handleFileClick}
                                             backgroundColor='white'
@@ -367,6 +477,8 @@ export default function UsersProfileFormPage(props) {
                                             inputType="text"
                                             placeHolder={userInfo.userName}
                                             forwardedRef={userNameRef}
+                                            isErr={isErrUserName}
+                                            errMsg={errMsgUserName}
                                         ></InputWithLabel02>
                                     </InputWrapper>
                                 </Layer>
@@ -392,6 +504,8 @@ export default function UsersProfileFormPage(props) {
                                                     phoneNumber="phoneNumber"
                                                     placeHolder={userInfo.phoneNumber}
                                                     forwardedRef={phoneNumberRef}
+                                                    isErr={isErrPhoneNumber}
+                                                    errMsg={errMsgPhoneNumber}
                                                 ></InputWithLabel02>
                                             </InputWrapper>
                                         </NumbersWrapper>
@@ -414,6 +528,7 @@ export default function UsersProfileFormPage(props) {
                         setIsOpenModal={setIsOpenModal}
                         handleCloseModal={handleCloseModal}
                         preparedData={preparedData}
+                        changeProfileImg={changeProfileImg}
                     ></UersUpdateModal>
                 </W50Container>
                 <W50Container>
@@ -425,6 +540,9 @@ export default function UsersProfileFormPage(props) {
                                         label="아이디"
                                         inputType="text"
                                         placeHolder={userInfo.userId}
+                                        forwardedRef={userIdRef}
+                                        isErr={isErrUserId}
+                                        errMsg={errMsgUserId}
                                     ></InputWithLabel02>
                                 </InputWrapper>
                             </Layer>
@@ -433,6 +551,9 @@ export default function UsersProfileFormPage(props) {
                                     <InputWithLabel02
                                         label="비밀번호"
                                         inputType="password"
+                                        forwardedRef={userPwRef}
+                                        isErr={isErrUserPw}
+                                        errMsg={errMsgUserPw}
                                     ></InputWithLabel02>
                                 </InputWrapper>
                             </Layer>

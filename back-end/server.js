@@ -170,3 +170,54 @@ app.get('/itemDetail/:itemId', async function (req, res) {
     }
     console.log('itemDetail fetching end');
 });
+// 회원 프로필 정보 수정
+app.post('/users/:userId/updateProfile', async function (req, res) {
+    try {
+        console.log('Received a updateProfile request from the front end.');
+        const userId = req.params.userId;
+        console.log(userId);
+        const data = {
+            profileImgName: req.body.profileImgName,
+            profileImgURL: req.body.profileImgURL,
+            userName: req.body.userName,
+            phoneNumber: req.body.phoneNumber,
+        };
+        // // 여기에서 데이터베이스 업데이트 로직을 추가
+        const result = await db.collection('users').updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: data }
+        );
+
+        // if (result.modifiedCount === 1) {
+        //     console.log('User profile updated successfully.');
+        //     res.status(200).json({ message: 'Success' });
+        // } else {
+        //     console.error('User profile not updated.');
+        //     res.status(500).json({ message: 'Failed to update user profile' });
+        // }
+        if (result.modifiedCount === 1) {
+            console.log('User profile updated successfully.');
+            // 업데이트 후 해당 사용자 정보를 다시 조회
+            const user = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+            const updatedUser = {
+                _id: user._id,
+                userId: user.userId,
+                userName: user.userName,
+                birthday: user.birthday,
+                phoneNumber: user.phoneNumber,
+                profileImgURL: user.profileImgURL,
+                profileImgName: user.profileImgName,
+            }
+
+            // 업데이트된 사용자 정보를 클라이언트에게 반환
+            res.status(200).json({ message: 'Success', updatedUser });
+        } else {
+            console.error('User profile not updated.');
+            res.status(500).json({ message: 'Failed to update user profile' });
+        }
+    }
+    catch (error) {
+        console.error('Error processing updateProfile request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});

@@ -58,10 +58,12 @@ const ProfileImgContainer = styled.div`
     align-items: center;
     justify-content: center;
     background-color: ${COLORS.lightgrayColor};
+    overflow: hidden;
 `;
 const ProfileImg = styled.img`
-    width: 60%;
-    height: 60%;
+    width: ${(props) => (props.noneProfileImg ? '60%' : '100%')};
+    height: ${(props) => (props.noneProfileImg ? '60%' : '100%')};
+    flex-shrink: 0;
 `;
 const ProfileInfoContainer = styled.div`
     width: calc(100% - 15rem);
@@ -116,6 +118,13 @@ const TextP = styled.p`
 export default function UsersProfilePage() {
     const userInfo = useSelector((state) => state.user.user);
     // console.log(userInfo);
+    // 기본 이미지 확인
+    let noneProfileImg;
+    if (userInfo.profileImgURL === null) {
+        noneProfileImg = true;
+    } else {
+        noneProfileImg = false;
+    }
     const navigate = useNavigate();
     const handleGoToWishList = () => {
         navigate('/users/wishList')
@@ -131,7 +140,18 @@ export default function UsersProfilePage() {
                     <ProfileContainer>
                         <ProfileImgNInfoContainer>
                             <ProfileImgContainer>
-                                <ProfileImg src="/icons/icon_profile.svg"></ProfileImg>
+                                {
+                                    userInfo.profileImgURL === null ?
+                                        <ProfileImg
+                                            src="/icons/icon_profile.svg"
+                                            noneProfileImg={noneProfileImg}
+                                        ></ProfileImg>
+                                        : <ProfileImg
+                                            src={userInfo.profileImgURL}
+                                            alt={userInfo.profileImgName}
+                                            noneProfileImg={noneProfileImg}
+                                        ></ProfileImg>
+                                }
                             </ProfileImgContainer>
                             <ProfileInfoContainer>
                                 <TextP>이름 : {userInfo.userName}</TextP>
