@@ -36,6 +36,19 @@ MongoClient.connect('mongodb+srv://admin:qwer1234@cluster0.qme18ml.mongodb.net/?
         });
 
     })
+// 홈페이지 아이템 목록 조회
+// 아이템 목록 코드
+app.get('/home/itemList', async function (req, res) {
+    try {
+        console.log('itemType processing start');
+
+        const result = await db.collection('items').find({}).toArray();
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error getting itemType data:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 // 아이디 확인 용
 app.get('/checkId/:imsiId', async function (req, res) {
     try {
@@ -50,7 +63,6 @@ app.get('/checkId/:imsiId', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 })
-
 // 사용자 회원가입 코드
 app.post('/signUp', async function (req, res) {
     try {

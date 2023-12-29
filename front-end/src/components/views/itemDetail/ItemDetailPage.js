@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const Content = styled.div`
     width: 124rem;
     margin: auto;
-    min-height: 58.6rem;
+    min-height: 60.6rem;
     padding: 1rem;
     box-sizing: border-box;
     display: flex;

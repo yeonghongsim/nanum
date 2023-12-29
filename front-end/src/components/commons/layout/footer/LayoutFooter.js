@@ -3,7 +3,7 @@ import { COLORS } from "../../../../commons/styles/COLORS";
 
 const Container = styled.div`
     width: 100%;
-    height: 8rem;
+    height: 6rem;
     background-color: ${COLORS.lightgrayColor};
 `;
 const Wrapper = styled.div`
