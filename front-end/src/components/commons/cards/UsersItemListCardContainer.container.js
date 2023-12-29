@@ -122,8 +122,6 @@ const ChevronRight = styled.img`
 `;
 
 export default function UsersItemListCardContainer({ item, ...props }) {
-    // 전달받은 item 확인
-    // console.log(item);
     // 현재 이미지의 index
     const [currentIndex, setCurrentIndex] = useState(0);
     // chevron 사용을 위해 최초,마지막 이미지 여부 확인

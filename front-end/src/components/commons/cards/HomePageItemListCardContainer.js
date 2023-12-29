@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import HomePageItemListCard from "./HomePageItemListCard";
+import { useSelector } from "react-redux";
 
 const ItemListContainer = styled.div`
     width : 100%;
@@ -13,32 +14,25 @@ const ItemListContainer = styled.div`
 `;
 
 export default function HomePageItemListCardContainer({ itemList, ...props }) {
-    console.log(itemList);
+    // 사용자 정보 조회
+    const userInfo = useSelector((state) => state.user.user);
+    console.log(userInfo);
+    let isLogin;
+    if (userInfo === null) {
+        isLogin = false;
+    } else {
+        isLogin = true;
+    }
+    console.log(isLogin);
+    // console.log(itemList);
     return (
         <ItemListContainer>
             {
                 itemList.map((item) => (
-                    <HomePageItemListCard item={item}></HomePageItemListCard>
-                    // <CardContainer key={item._id}>
-                    //     <CardImgContainer>
-                    //         <CardImgWrapper>
-                    //             {
-                    //                 item.imageList.map((image, index) => (
-                    //                     <Img
-                    //                         key={index}
-                    //                         src={image.fileUrl}
-                    //                         alt={image.fileName}
-                    //                         onClick={() => handleItemId(item._id)}
-                    //                     ></Img>
-                    //                 ))
-                    //             }
-                    //         </CardImgWrapper>
-                    //     </CardImgContainer>
-                    //     <CardInfoContainer>
-                    //         <TextCardName>{item.itemName}</TextCardName>
-                    //         <TextCardAddress>{item.locate}</TextCardAddress>
-                    //     </CardInfoContainer>
-                    // </CardContainer>
+                    <HomePageItemListCard
+                        item={item}
+                        isLogin={isLogin}
+                    ></HomePageItemListCard>
                 ))
             }
         </ItemListContainer>

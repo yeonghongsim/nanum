@@ -13,6 +13,7 @@ import UsersRegisterItemPage from './components/views/users/registerItem/UsersRe
 import Test1 from './components/views/test/Test1';
 import Test2 from './components/views/test/Test2';
 import ItemDetailPage from './components/views/itemDetail/ItemDetailPage';
+import Heart from './components/views/test/Heart';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -40,6 +41,9 @@ function App() {
         }></Route>
         <Route path='/test2' element={
           <Test2 />
+        }></Route>
+        <Route path='/heart' element={
+          <Heart />
         }></Route>
         <Route path='/itemDetail/:itemId' element={
           <ItemDetailPage />

@@ -12,6 +12,7 @@ const CardContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    position: relative;
     @media screen and (max-width: 1024px) {
         width: 20rem;
         height: 20rem;
@@ -121,8 +122,66 @@ const ChevronRight = styled.img`
     border-radius: 0.5rem 0.5rem 0 0;
     flex-shrink: 0;
 `;
+const LikeWrapper = styled.div`
+    display: ${(props) => (props.isOn ? 'block' : 'none')};
+    width: 3rem;
+    height: 3rem;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+`;
+const LikeBtn = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    transform: rotate(45deg);
+    // transition: all 0.8s;
+    position: relative;
+    border-bottom: 2px solid ${COLORS.middlegrayColor};
+    border-right: 2px solid ${COLORS.middlegrayColor};
+    opacity: 0.7;
+    &::before{
+        content: "";
+        width: 50%;
+        height: 93.5%;
+        left: -45%;
+        background-color: white;
+        position: absolute;
+        border-radius: 3rem 0 0 3rem;
+        border-top: 2px solid ${COLORS.middlegrayColor};
+        border-bottom: 2px solid ${COLORS.middlegrayColor};
+        border-left: 2px solid ${COLORS.middlegrayColor};
+        // transition: all 0.8s;
+    }
+    &::after{
+        content: "";
+        width: 93.5%;
+        height: 50%;
+        top: -45%;
+        background-color: white;
+        position: absolute;
+        border-radius: 3rem 3rem 0 0;
+        border-top: 2px solid ${COLORS.middlegrayColor};
+        border-left: 2px solid ${COLORS.middlegrayColor};
+        border-right: 2px solid ${COLORS.middlegrayColor};
+        // transition: all 0.8s;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: ${COLORS.likeColor};
+        opacity: 1;
+    }
+    &:hover:after {
+        cursor: pointer;
+        background-color: ${COLORS.likeColor};
+    }
+    &:hover:before {
+        cursor: pointer;
+        background-color: ${COLORS.likeColor};
+    }
+`;
 
-export default function HomePageItemListCard({ item, ...props }) {
+export default function HomePageItemListCard({ item, isLogin, ...props }) {
     const navigate = useNavigate();
     // 현재 이미지의 index
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -137,8 +196,13 @@ export default function HomePageItemListCard({ item, ...props }) {
     const handleNextImage = () => {
         setCurrentIndex((prevIndex) => (prevIndex < item.imageList.length - 1 ? prevIndex + 1 : 0));
     };
+    // 고유 아이디로 상세 페이지로 이동
     const handleItemId = (itemId) => {
         navigate(`/itemDetail/${itemId}`);
+    };
+    // 해당 아이템 위시리스트에 추가
+    const handleLikeToggle = () => {
+        alert(1111);
     };
 
     return (
@@ -175,6 +239,11 @@ export default function HomePageItemListCard({ item, ...props }) {
                 <TextCardName>{item.itemName}</TextCardName>
                 <TextCardAddress>{item.locate}</TextCardAddress>
             </CardInfoContainer>
+            <LikeWrapper isOn={isLogin}>
+                <LikeBtn
+                    onClick={handleLikeToggle}
+                ></LikeBtn>
+            </LikeWrapper>
         </CardContainer>
     )
 }

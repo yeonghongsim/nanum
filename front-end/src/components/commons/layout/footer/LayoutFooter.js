@@ -55,7 +55,7 @@ export default function LayoutFooter() {
                     <TextP>copyright</TextP>
                 </CopyrightDiv>
                 <AnnounceDiv>
-                    <TextSpan>물건을 찾고, 공유하세요.</TextSpan>
+                    <TextSpan>물건을 찾고, 공유하세요. 로그인했을 때 나눔자의 연락처를 확인하실 수 있습니다.</TextSpan>
                 </AnnounceDiv>
             </Wrapper>
         </Container>
