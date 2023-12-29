@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../../../commons/styles/COLORS";
 import RectangleBtn03 from "../../button/RectangleBtn03";
@@ -94,11 +94,12 @@ export default function UersUpdateModal({
     setIsOpenModal,
     handleCloseModal,
     preparedData,
+    duplicatedId,
     ...props
 }) {
     // 회원정보 조회
     const userInfo = useSelector((state) => state.user.user);
-    // console.log(userInfo);
+    console.log(duplicatedId);
     // 모달 ref
     const modalRef = useRef(null);
     // 모달 외각 클릭 시 모달 닫힘 함수
@@ -192,30 +193,29 @@ export default function UersUpdateModal({
     let handleUpdateLogInfo;
     let changeId;
     let changedPw;
-    const [duplicatedId, setDuplicatedId] = useState(false);
     // handleDuplicateId function
-    const handleDuplicateId = async (imsiId) => {
-        try {
-            const response = await fetch(`http://localhost:8080/checkId/${imsiId}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            const result = data.result;
-            if (result == null) {
-                // console.log('사용가능한 아이디 입니다.');
-                setDuplicatedId(false);
-                // setIsLoading(false);
-            } else {
-                // console.log('이미 사용중인 아이디 입니다.');
-                setDuplicatedId(true);
-                // setIsLoading(false);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            // 에러 처리 로직 추가 (예: 사용자에게 알림)
-        }
-    };
+    // const handleDuplicateId = async (imsiId) => {
+    //     try {
+    //         const response = await fetch(`http://localhost:8080/checkId/${imsiId}`);
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
+    //         const data = await response.json();
+    //         const result = data.result;
+    //         if (result == null) {
+    //             // console.log('사용가능한 아이디 입니다.');
+    //             setDuplicatedId(false);
+    //             // setIsLoading(false);
+    //         } else {
+    //             // console.log('이미 사용중인 아이디 입니다.');
+    //             setDuplicatedId(true);
+    //             // setIsLoading(false);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         // 에러 처리 로직 추가 (예: 사용자에게 알림)
+    //     }
+    // };
     if (isOn && preparedData.whatBtn === 'logInfo') {
         // userId 변경값이 있을때/없을때
         if (preparedData.userId === '') {
@@ -223,7 +223,7 @@ export default function UersUpdateModal({
         } else {
             changeId = true;
             // 아이디 중복 확인 함수 코드 예정
-            handleDuplicateId(preparedData.userId);
+            // handleDuplicateId(preparedData.userId);
             // 1. 중복인 경우
             // 뒤로가기
             // 2. 중복이 아닌 경우
@@ -351,8 +351,6 @@ export default function UersUpdateModal({
         //         throw error;
         //     })
     };
-    // 세팅한 데이터 확인 콘솔
-    // console.log(preparedData);
 
     return (
         <Wrapper isOn={isOn}>

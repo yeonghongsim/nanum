@@ -205,6 +205,8 @@ export default function UsersProfileFormPage(props) {
     });
     // 파일 이미지 변경 유무
     const [changeProfileImg, setChangeProfileImg] = useState(false);
+    // 아이디 중복 확인 변수
+    const [duplicatedId, setDuplicatedId] = useState();
     // 파일 버튼 클릭
     const handleFileClick = () => {
         fileInputRef.current.click();
@@ -297,7 +299,7 @@ export default function UsersProfileFormPage(props) {
     // 모달 여/닫 변수
     const [isOpenModal, setIsOpenModal] = useState(false);
     // 모달 열기 함수
-    const handleOpenModal = (what) => {
+    const handleOpenModal = async (what) => {
         // 컴포넌트 재사용으로 인한
         // 구분 조건 ( 프로필 수정 버튼 클릭 시 )
         if (what === 'profile') {
@@ -415,12 +417,35 @@ export default function UsersProfileFormPage(props) {
             const data = {
                 userId: userIdInput,
                 userPassword: userPwInput,
-                whatBtn: what
+                whatBtn: what,
             };
+            // 아이디 중복 확인 함수
+            await handleDuplicateId(data.userId);
             // 준비한 데이터 저장
             setPreparedData(data);
             // 모달 열기
             setIsOpenModal(true);
+        }
+    };
+    // 아이디 중복 확인
+    const handleDuplicateId = async (imsiId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/checkId/${imsiId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const result = data.result;
+            if (result == null) {
+                console.log('사용가능한 아이디 입니다.');
+                setDuplicatedId(false);
+            } else {
+                console.log('이미 사용중인 아이디 입니다.');
+                setDuplicatedId(true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // 에러 처리 로직 추가 (예: 사용자에게 알림)
         }
     };
     // 모달 닫기 함수
@@ -523,6 +548,7 @@ export default function UsersProfileFormPage(props) {
                         handleCloseModal={handleCloseModal}
                         preparedData={preparedData}
                         changeProfileImg={changeProfileImg}
+                        duplicatedId={duplicatedId}
                     ></UersUpdateModal>
                 </W50Container>
                 <W50Container>
@@ -559,7 +585,7 @@ export default function UsersProfileFormPage(props) {
                                 <RectangleBtn04
                                     content="회원정보 수정"
                                     backgroundColor={COLORS.linkColor}
-                                    handleOpenModal={() => handleOpenModal('logInfo')}
+                                    handleOpenModal={() => handleOpenModal('logInfo', duplicatedId)}
                                 ></RectangleBtn04>
                             </BtnWrapper>
                         </BtnContainer>
