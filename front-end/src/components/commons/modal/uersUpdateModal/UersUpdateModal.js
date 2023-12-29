@@ -1,12 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../../../commons/styles/COLORS";
 import RectangleBtn03 from "../../button/RectangleBtn03";
 import { useSelector } from "react-redux";
 import store from "../../../../commons/store/store";
 import { setUser } from "../../../../commons/store/userSlice";
-// import Spinner from "../../hooks/Spinner";
-
 
 const Wrapper = styled.div`
     width: 100%;
@@ -194,22 +192,45 @@ export default function UersUpdateModal({
     let handleUpdateLogInfo;
     let changeId;
     let changedPw;
-    // let duplicatedId;
-    if (preparedData.whatBtn === 'logInfo') {
+    const [duplicatedId, setDuplicatedId] = useState(false);
+    // handleDuplicateId function
+    const handleDuplicateId = async (imsiId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/checkId/${imsiId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const result = data.result;
+            if (result == null) {
+                // console.log('사용가능한 아이디 입니다.');
+                setDuplicatedId(false);
+                // setIsLoading(false);
+            } else {
+                // console.log('이미 사용중인 아이디 입니다.');
+                setDuplicatedId(true);
+                // setIsLoading(false);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // 에러 처리 로직 추가 (예: 사용자에게 알림)
+        }
+    };
+    if (isOn && preparedData.whatBtn === 'logInfo') {
         // userId 변경값이 있을때/없을때
         if (preparedData.userId === '') {
             changeId = false;
         } else {
             changeId = true;
-            console.log(preparedData.userId);
             // 아이디 중복 확인 함수 코드 예정
+            handleDuplicateId(preparedData.userId);
             // 1. 중복인 경우
             // 뒤로가기
             // 2. 중복이 아닌 경우
             // 뒤로가기+변경하기
         }
         // userPw 변경값이 있을때/없을때
-        if (preparedData.userPw === '') {
+        if (preparedData.userPassword === '') {
             changedPw = false;
         } else {
             changedPw = true;
@@ -371,7 +392,7 @@ export default function UersUpdateModal({
                             </>
                             : <>
                                 <BodyText>
-                                    아이디 중복 여부 : {preparedData.userId}
+                                    아이디 중복 여부 : {duplicatedId ? 'O' : 'X'}
                                 </BodyText>
                                 <BodyText>
                                     변경할 아이디 : {changeId ? preparedData.userId : 'X'}
@@ -379,7 +400,6 @@ export default function UersUpdateModal({
                                 <BodyText>
                                     비밀번호 변경 여부 : {changedPw ? 'O' : 'X'}
                                 </BodyText>
-                                {/* <Spinner></Spinner> */}
                             </>
                     }
                     <AskUpdateText>
@@ -394,23 +414,26 @@ export default function UersUpdateModal({
                             onClick={handleCloseModal}
                         ></RectangleBtn03>
                     </BtnWrapper>
-                    <BtnWrapper>
-                        {
-                            preparedData.whatBtn === 'profile' ?
-                                <RectangleBtn03
-                                    backgroundColor={COLORS.linkColor}
-                                    content='변경하기'
-                                    onClick={handleUpdateUserInfo}
-                                ></RectangleBtn03> :
-                                <RectangleBtn03
-                                    backgroundColor={COLORS.linkColor}
-                                    content='변경하기'
-                                    onClick={handleUpdateLogInfo}
-                                ></RectangleBtn03>
-                        }
-                    </BtnWrapper>
+                    {
+                        !duplicatedId &&
+                        <BtnWrapper>
+                            {
+                                preparedData.whatBtn === 'profile' ?
+                                    <RectangleBtn03
+                                        backgroundColor={COLORS.linkColor}
+                                        content='변경하기'
+                                        onClick={handleUpdateUserInfo}
+                                    ></RectangleBtn03> :
+                                    <RectangleBtn03
+                                        backgroundColor={COLORS.linkColor}
+                                        content='변경하기'
+                                        onClick={handleUpdateLogInfo}
+                                    ></RectangleBtn03>
+                            }
+                        </BtnWrapper>
+                    }
                 </BtnContainer>
             </Content>
-        </Wrapper>
+        </Wrapper >
     )
 }
