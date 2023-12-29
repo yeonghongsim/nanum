@@ -5,6 +5,7 @@ import RectangleBtn03 from "../../button/RectangleBtn03";
 import { useSelector } from "react-redux";
 import store from "../../../../commons/store/store";
 import { setUser } from "../../../../commons/store/userSlice";
+// import Spinner from "../../hooks/Spinner";
 
 
 const Wrapper = styled.div`
@@ -120,8 +121,6 @@ export default function UersUpdateModal({
     // 전달받은 whatBtn 에 따라 코드 실행 다르게
     // whatBtn - profile
     let handleUpdateUserInfo;
-    // whatBtn - logInfo
-    let handleUpdateLogInfo;
     if (preparedData.whatBtn === 'profile') {
         // fetch post 함수. - 프로필 정보
         handleUpdateUserInfo = async () => {
@@ -133,7 +132,6 @@ export default function UersUpdateModal({
             let profileImgName = preparedData.profileImgName;
             let profileImgURL = preparedData.profileImgURL;
             const userObjectId = userInfo._id;
-            // console.log(userObjectId);
             // 변경사항 3가지 ( 이미지, 이름, 연락처 )
             // 이미지 변경 하지 않는 경우
             // if (preparedData.profileImgURL === null) {
@@ -192,20 +190,146 @@ export default function UersUpdateModal({
                 .catch(error => console.error('Error:', error));
         };
     }
+    // whatBtn - logInfo
+    let handleUpdateLogInfo;
+    let changeId;
+    let changedPw;
+    // let duplicatedId;
     if (preparedData.whatBtn === 'logInfo') {
-        // 콘솔 확인
-        console.log('user Id check');
-        if (preparedData.userId !== '') {
+        // userId 변경값이 있을때/없을때
+        if (preparedData.userId === '') {
+            changeId = false;
+        } else {
+            changeId = true;
             console.log(preparedData.userId);
+            // 아이디 중복 확인 함수 코드 예정
+            // 1. 중복인 경우
+            // 뒤로가기
+            // 2. 중복이 아닌 경우
+            // 뒤로가기+변경하기
         }
-        // 중복 아이디 확인.
-        // const possibleId = '';
-        // 중복 시 뒤로가기
+        // userPw 변경값이 있을때/없을때
+        if (preparedData.userPw === '') {
+            changedPw = false;
+        } else {
+            changedPw = true;
+        }
         // fetch post 함수. - 프로필 정보
         handleUpdateLogInfo = async () => {
-            alert(111);
+            // 유저 고유 아이디
+            const userObjectId = userInfo._id;
+            // 1. 데이터 변수 ( 아이디, 비번 )
+            let userId = preparedData.userId;
+            let userPassword = preparedData.userPassword;
+            // 2. 데이터가 변경되지 않은 경우
+            if (userId === '') {
+                userId = userInfo.userId;
+            };
+            if (userPassword === '') {
+                // 비밀번호를 가져오고자 하는 경우
+                try {
+                    const fetchedPassword = await getUserPassword(userId);
+                    userPassword = fetchedPassword;
+                    console.log('fetching check');
+                    console.log('userPassword : ' + userPassword);
+                } catch (error) {
+                    console.error('error : ' + error);
+                    // 에러 처리
+                }
+            };
+            // 3. 데이터를 저장할 통
+            const data = {
+                userId: userId,
+                userPassword: userPassword,
+            }
+            // -- 변경 사항 업데이트 통신 시작
+            const fetchUrl = `http://localhost:8080/users/${userObjectId}/updateLoginfo`;
+            // method, headers, body,
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 기타 필요한 헤더 설정 가능
+                },
+                body: JSON.stringify(data),
+            };
+            // fetch
+            fetch(fetchUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                    // 업데이트 성공 후 로직 코드 예정
+                    // 데이터 셋업
+                    store.dispatch(setUser(null));
+                    // 페이지 변경 로직
+                    window.location.href = '/login';
+                })
+                .catch(error => console.error('Error:', error));
+            // -- 변경 사항 업데이트 통신 끝
         };
     }
+    // getUserPassword
+    const getUserPassword = async (userId) => {
+        // 데이터 저장
+        const data = {
+            userId: userId
+        };
+        // get Url
+        const url = 'http://localhost:8080/getUserPassword';
+        // 객체를 쿼리 문자열로 변환
+        const queryString = new URLSearchParams(data).toString();
+        // url에 쿼리 문자열 추가
+        const fullUrl = `${url}?${queryString}`;
+        // gpt에서 알려준 코드
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const responseData = await response.json();
+            if (responseData.result == null) {
+                console.log('회원정보 불일치');
+                return null; // 데이터가 없을 경우 명시적으로 null 반환
+            } else {
+                console.log('회원정보 일치');
+                console.log('result: ' + responseData.result);
+                const password = responseData.result;
+                return password;
+            }
+        } catch (error) {
+            console.error('error: ' + error);
+            throw error;
+        }
+        // 내 코드
+        // await fetch(fullUrl, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json' // 요청 헤더 설정 (JSON을 사용하는 경우)
+        //     }
+        // })
+        //     .then(response => {
+        //         return response.json();
+        //     })
+        //     .then(data => {
+        //         if (data.result == null) {
+        //             console.log('회원정보 불일치');
+        //         } else {
+        //             console.log('회원정보 일치');
+        //             console.log('result' + data.result);
+        //             const password = data.result;
+        //             return password;
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('error : ' + error);
+        //         throw error;
+        //     })
+    };
     // 세팅한 데이터 확인 콘솔
     // console.log(preparedData);
 
@@ -250,15 +374,16 @@ export default function UersUpdateModal({
                                     아이디 중복 여부 : {preparedData.userId}
                                 </BodyText>
                                 <BodyText>
-                                    아이디 변경 : {preparedData.userId}
+                                    변경할 아이디 : {changeId ? preparedData.userId : 'X'}
                                 </BodyText>
                                 <BodyText>
-                                    비밀번호 변경 : {preparedData.userPw}
+                                    비밀번호 변경 여부 : {changedPw ? 'O' : 'X'}
                                 </BodyText>
+                                {/* <Spinner></Spinner> */}
                             </>
                     }
                     <AskUpdateText>
-                        입니다. 정말로 변경하시겠습니까?
+                        입니다. 변경할 경우 자동으로 로그아웃되며, 로그인페이지로 이동합니다. 정말로 변경하시겠습니까?
                     </AskUpdateText>
                 </ModalBody>
                 <BtnContainer>

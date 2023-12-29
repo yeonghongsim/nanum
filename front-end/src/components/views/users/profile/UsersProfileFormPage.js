@@ -177,10 +177,10 @@ export default function UsersProfileFormPage(props) {
     // console.log(userInfo);
     // 회원 이미지 정보로 초기 데이터 세팅
     let profileImage;
-    if (userInfo.profileImgURL === null) {
-        profileImage = '/icons/icon_profile.svg'
+    if (userInfo?.profileImgURL === null) {
+        profileImage = '/icons/icon_profile.svg';
     } else {
-        profileImage = userInfo.profileImgURL
+        profileImage = userInfo?.profileImgURL;
     }
     // 사진 선택
     const [selectedImg, setSelectedImg] = useState(profileImage);
@@ -217,7 +217,7 @@ export default function UsersProfileFormPage(props) {
             fileURL: null,
             fileName: null
         });
-        if (userInfo.profileImgURL === null) {
+        if (userInfo?.profileImgURL === null) {
             setChangeProfileImg(false);
         } else {
             setChangeProfileImg(true);
@@ -385,42 +385,36 @@ export default function UsersProfileFormPage(props) {
                 setIsErrUserPw(false);
                 return;
             }
-            // 영어 숫자 만 가능
-            const idValid = /^[a-zA-Z\d]+$/.test(userIdInput);
-            if (!idValid || userIdInput.length > 30) {
+            // 1. 아이디
+            // 영문자, 숫자 각각 하나 이상 포함, 8-25자 이하
+            const idValid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/.test(userIdInput);
+            if (userIdInput !== '' && !idValid) {
                 setIsErrUserId(true);
-                setErrMsgUserId('30자 이내의 영문,숫자만 입력가능합니다.');
+                setErrMsgUserId('25자 이내의 영문,숫자만 입력가능합니다.');
             } else {
                 setIsErrUserId(false);
                 setErrMsgUserId('');
             }
-            // // 특수기호,영문,숫자 혼합 10자리 이상인지 확인
-            // const pwValid = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[a-zA-Z])(?=.*\d).{0,}$/.test(userPwInput);
-            // // 2. 비밀번호 영문,숫자,특수문자만 입력 가능. 한글 입력시 검사 실패
-            // if (!pwValid) {
-            // setIsErrUserPw(true);
-            // setErrMsgUserPw('숫자 8자리로 입력해주세요.');
-            // } else {
-            // setIsErrUserPw(false);
-            // setErrMsgUserPw('');
-            // }
-            // const pwValid = /^[\d]+$/.test(userPwInput);
-            // if (!pwValid) {
-            //     setIsErrUserPw(true);
-            //     setErrMsgUserPw('숫자 8자리로 입력해주세요.');
-            // } else {
-            //     setIsErrUserPw(false);
-            //     setErrMsgUserPw('');
-            // }
+            // 2. 비밀번호
+            // 숫자, 영문자, 특수문자 각각 하나 이상 포함, 10자 이상 25자 이하
+            const pwValid = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{10,25}$/.test(userPwInput);
+            if (userPwInput !== '' && !pwValid) {
+                setIsErrUserPw(true);
+                setErrMsgUserPw('10자 이상 25자 이내의 영문,숫자,특수기호만 입력가능합니다.');
+            } else {
+                setIsErrUserPw(false);
+                setErrMsgUserPw('');
+            }
             // 유효성 검사 부적합 시 진행할 코드.
-            if (!idValid || userIdInput.length > 30) {
+            if ((userIdInput !== '' && !idValid)
+                || (userPwInput !== '' && !pwValid)) {
                 return;
             }
             // 유효성 검사 끝 ( 통과 )
             // 변수 통합하기
             const data = {
                 userId: userIdInput,
-                userPw: userPwInput,
+                userPassword: userPwInput,
                 whatBtn: what
             };
             // 준비한 데이터 저장
@@ -445,7 +439,7 @@ export default function UsersProfileFormPage(props) {
                                 <Img
                                     src={selectedImg}
                                     isSelectedImg={isSelectedImg}
-                                    alt={userInfo.profileImgName}
+                                    alt={userInfo?.profileImgName}
                                 ></Img>
                                 {
                                     isSelectedImg ?
@@ -475,7 +469,7 @@ export default function UsersProfileFormPage(props) {
                                         <InputWithLabel02
                                             label="이름"
                                             inputType="text"
-                                            placeHolder={userInfo.userName}
+                                            placeHolder={userInfo?.userName}
                                             forwardedRef={userNameRef}
                                             isErr={isErrUserName}
                                             errMsg={errMsgUserName}
@@ -488,7 +482,7 @@ export default function UsersProfileFormPage(props) {
                                             <SelectBoxWithLabel02
                                                 label="brandNumber"
                                                 name="brandNumber"
-                                                defaultValue={userInfo.phoneNumber.split('-')[0]}
+                                                defaultValue={userInfo === null ? null : userInfo.phoneNumber.split('-')[0]}
                                                 options={[
                                                     { label: "010", value: "010" },
                                                     { label: "011", value: "011" }
@@ -502,7 +496,7 @@ export default function UsersProfileFormPage(props) {
                                                     label="&nbsp;"
                                                     inputType="text"
                                                     phoneNumber="phoneNumber"
-                                                    placeHolder={userInfo.phoneNumber}
+                                                    placeHolder={userInfo?.phoneNumber}
                                                     forwardedRef={phoneNumberRef}
                                                     isErr={isErrPhoneNumber}
                                                     errMsg={errMsgPhoneNumber}
@@ -539,7 +533,7 @@ export default function UsersProfileFormPage(props) {
                                     <InputWithLabel02
                                         label="아이디"
                                         inputType="text"
-                                        placeHolder={userInfo.userId}
+                                        placeHolder={userInfo?.userId}
                                         forwardedRef={userIdRef}
                                         isErr={isErrUserId}
                                         errMsg={errMsgUserId}

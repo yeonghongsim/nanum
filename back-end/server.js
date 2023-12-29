@@ -95,6 +95,21 @@ app.get('/login', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+// 사용자 비밀번호 코드
+app.get('/getUserPassword', async function (req, res) {
+    try {
+        console.log('getUserPassword processing start');
+        console.log('userPassword : ' + req.query.userId);
+        db.collection('users').findOne({ userId: req.query.userId }, function (error, result) {
+            console.log(result.userPassword);
+            res.send({ result: result.userPassword });
+        })
+    }
+    catch (error) {
+        console.error('Error processing signUp request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 // 아이템 목록 코드
 app.get('/itemType', async function (req, res) {
     try {
@@ -182,19 +197,12 @@ app.post('/users/:userId/updateProfile', async function (req, res) {
             userName: req.body.userName,
             phoneNumber: req.body.phoneNumber,
         };
-        // // 여기에서 데이터베이스 업데이트 로직을 추가
+        // 여기에서 데이터베이스 업데이트 로직을 추가
         const result = await db.collection('users').updateOne(
             { _id: new ObjectId(userId) },
             { $set: data }
         );
-
-        // if (result.modifiedCount === 1) {
-        //     console.log('User profile updated successfully.');
-        //     res.status(200).json({ message: 'Success' });
-        // } else {
-        //     console.error('User profile not updated.');
-        //     res.status(500).json({ message: 'Failed to update user profile' });
-        // }
+        // 회원 정보 수정을 위한 재 조회 및 전달
         if (result.modifiedCount === 1) {
             console.log('User profile updated successfully.');
             // 업데이트 후 해당 사용자 정보를 다시 조회
@@ -215,6 +223,51 @@ app.post('/users/:userId/updateProfile', async function (req, res) {
             console.error('User profile not updated.');
             res.status(500).json({ message: 'Failed to update user profile' });
         }
+    }
+    catch (error) {
+        console.error('Error processing updateProfile request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+// 회원 로그인 정보 수정
+app.post('/users/:userId/updateLoginfo', async function (req, res) {
+    try {
+        console.log('Received a updateProfile request from the front end.');
+        const userId = req.params.userId;
+        console.log(userId);
+        const data = {
+            userId: req.body.userId,
+            userPassword: req.body.userPassword,
+        };
+        // 여기에서 데이터베이스 업데이트 로직을 추가
+        const result = await db.collection('users').updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: data }
+        );
+        // 업데이트된 정보 확인 및 로깅
+        console.log('Matched ' + result.matchedCount + ' document(s) and modified ' + result.modifiedCount + ' document(s)');
+        // 클라이언트에게 업데이트된 정보 반환
+        res.json({ message: 'Profile updated successfully', result });
+        // 회원 정보 수정을 위한 재 조회 및 전달
+        // if (result.modifiedCount === 1) {
+        //     console.log('User profile updated successfully.');
+        //     // 업데이트 후 해당 사용자 정보를 다시 조회
+        //     const user = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+        //     const updatedUser = {
+        //         _id: user._id,
+        //         userId: user.userId,
+        //         userName: user.userName,
+        //         birthday: user.birthday,
+        //         phoneNumber: user.phoneNumber,
+        //         profileImgURL: user.profileImgURL,
+        //         profileImgName: user.profileImgName,
+        //     }
+        //     // 업데이트된 사용자 정보를 클라이언트에게 반환
+        //     res.status(200).json({ message: 'Success', updatedUser });
+        // } else {
+        //     console.error('User profile not updated.');
+        //     res.status(500).json({ message: 'Failed to update user profile' });
+        // }
     }
     catch (error) {
         console.error('Error processing updateProfile request:', error);

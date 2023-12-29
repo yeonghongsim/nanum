@@ -53,7 +53,7 @@ export default function InputWithLabel02({ forwardedRef, ...props }) {
     let modifiedPlaceholder = props.placeHolder;
 
     if (props.phoneNumber === 'phoneNumber') {
-        const phoneNumber = props.placeHolder.split('-')[1] + props.placeHolder.split('-')[2];
+        const phoneNumber = props.placeHolder?.split('-')[1] + props.placeHolder?.split('-')[2];
         modifiedPlaceholder = phoneNumber;
     }
     // console.log(props.isErr);

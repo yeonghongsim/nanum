@@ -7,7 +7,6 @@ import InputWithLabel02Ref from "../../commons/input/InputWithLabel02Ref";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from "../../../commons/store/store";
-// import { useDispatch } from "react-redux";
 import { setUser } from "../../../commons/store/userSlice";
 
 const Container = styled.div`
@@ -142,7 +141,7 @@ export default function LoginPage() {
                         profileImgURL: data.result.profileImgURL,
                         profileImgName: data.result.profileImgName,
                     }
-                    // console.log(userInfo);
+                    console.log(userInfo);
                     // store에 저장
                     store.dispatch(setUser(userInfo));
                     // 페이지 이동
