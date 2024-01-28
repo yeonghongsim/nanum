@@ -50,6 +50,29 @@ const ImageContainer = styled.div`
         flex-direction: column;
     }
 `;
+const DeleteBtnContainer = styled.div`
+    width: 8rem;
+    height: 4rem;
+    background-color: red;
+    border: 1px solid red;
+    border-radius: 1rem;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.6rem;
+    font-weight: bold;
+    top: 2rem;
+    right: 2rem;
+    opacity: 0.7;
+    transition: all 0.7s;
+    &:hover {
+        opacity: 1;
+        cursor: pointer;
+        scale: 1.03;
+    }
+`;
 const ImageLeftContainer = styled.div`
     width: 50%;
     height: 100%;
@@ -140,8 +163,8 @@ const ContactInfoContainer = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 1rem;
     padding: 0.5rem;
     box-sizing: border-box;
@@ -222,7 +245,6 @@ export default function ItemDetailPage() {
                 setItem(result);
             } catch (error) {
                 console.error('Error getting itemType data:', error);
-                throw error;
             } finally {
                 setLoading(false);
             }
@@ -238,7 +260,28 @@ export default function ItemDetailPage() {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
-    // console.log(item.imageList)
+    const handleDeleteItem = async () => {
+        // 1. 해당 아이템의 고유 아이디를 갖는다.
+        const itemId = item._id;
+        // 정말로 해당 상품을 삭제할지 물을 modal 이나 confirm
+        try {
+            console.log(itemId);
+            console.log('delete item fetch start');
+            // 2. http 통신
+            // method : DELETE,
+            const deleteURL = `http://localhost:8080/deleteItem/${itemId}`;
+            fetch(deleteURL, {
+                method: 'DELETE'
+            });
+        } catch (error) {
+            console.error('Error deleting item data:', error);
+        } finally {
+            // console.log('delete item fetch end');
+            window.location.href = '/itemList';
+        }
+    };
+    // console.log(userInfo);
+    // console.log(item);
 
     return (
         <Wrapper>
@@ -249,6 +292,12 @@ export default function ItemDetailPage() {
                         <Spinner></Spinner> :
                         <>
                             <ImageContainer>
+                                {
+                                    userInfo._id === item.userId &&
+                                    <DeleteBtnContainer
+                                        onClick={handleDeleteItem}
+                                    >삭제하기</DeleteBtnContainer>
+                                }
                                 <ImageLeftContainer>
                                     <ImageWrapper>
                                         <Image

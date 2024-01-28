@@ -27,6 +27,9 @@ function App() {
         <Route path='/' element={
           <HomePage></HomePage>
         }></Route>
+        <Route path='/itemList' element={
+          <HomePage></HomePage>
+        }></Route>
         <Route path='/login' element={
           <LoginPage></LoginPage>
         }></Route>

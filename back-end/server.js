@@ -286,3 +286,29 @@ app.post('/users/:userId/updateLoginfo', async function (req, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+app.delete('/deleteItem/:itemId', async function (req, res) {
+    try {
+        console.log('delete item fetch start');
+        // 전달한 파라미터 저장
+        const itemId = req.params.itemId;
+        // 파라미터 확인
+        console.log(itemId);
+        // db와 통신하여 해당 item의 id를 갖는 data 삭제하기
+        // collection : items, deleteOne
+        const result = await db.collection('items').deleteOne({ _id: new ObjectId(itemId) });
+        if (result.deletedCount === 1) {
+            console.log('Item deleted successfully.');
+            res.status(200).json({ message: 'Success' });
+        } else {
+            console.error('Failed to delete item.');
+            res.status(500).json({ message: 'Failed to delete item' });
+        }
+    }
+    catch (error) {
+        console.error('Error processing updateProfile request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+    finally {
+        console.log('delete item fetch end');
+    }
+});
