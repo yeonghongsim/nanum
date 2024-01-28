@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Spinner from "../../commons/hooks/Spinner";
 import { COLORS } from "../../../commons/styles/COLORS";
 import ItemDetailMoreImgModal from "../../commons/modal/itemDetail/ItemDetailMoreImgModal";
+import DeleteItemModal from "../../commons/modal/itemDetail/DeleteItemModal";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -232,7 +233,6 @@ export default function ItemDetailPage() {
     const [loading, setLoading] = useState(true);
     // 사용자 등록 물건 목록 조회 통
     const [item, setItem] = useState({});
-
     // useEffect 의존성 추가하여, 물건 정보 조회
     useEffect(() => {
         // 사용자 id 통해 사용자 등록 물건 조회
@@ -260,28 +260,10 @@ export default function ItemDetailPage() {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
-    const handleDeleteItem = async () => {
-        // 1. 해당 아이템의 고유 아이디를 갖는다.
-        const itemId = item._id;
-        // 정말로 해당 상품을 삭제할지 물을 modal 이나 confirm
-        try {
-            console.log(itemId);
-            console.log('delete item fetch start');
-            // 2. http 통신
-            // method : DELETE,
-            const deleteURL = `http://localhost:8080/deleteItem/${itemId}`;
-            fetch(deleteURL, {
-                method: 'DELETE'
-            });
-        } catch (error) {
-            console.error('Error deleting item data:', error);
-        } finally {
-            // console.log('delete item fetch end');
-            window.location.href = '/itemList';
-        }
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const handleDeleteModaleOpen = () => {
+        setIsDeleteModalOpen(true);
     };
-    // console.log(userInfo);
-    // console.log(item);
 
     return (
         <Wrapper>
@@ -295,9 +277,13 @@ export default function ItemDetailPage() {
                                 {
                                     userInfo._id === item.userId &&
                                     <DeleteBtnContainer
-                                        onClick={handleDeleteItem}
+                                        onClick={handleDeleteModaleOpen}
                                     >삭제하기</DeleteBtnContainer>
                                 }
+                                <DeleteItemModal
+                                    isDeleteModalOpen={isDeleteModalOpen}
+                                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                                    itemId={item._id}></DeleteItemModal>
                                 <ImageLeftContainer>
                                     <ImageWrapper>
                                         <Image
