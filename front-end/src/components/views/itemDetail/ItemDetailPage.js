@@ -241,7 +241,7 @@ export default function ItemDetailPage() {
                 const fullURL = `http://localhost:8080/itemDetail/${itemId}`;
                 const response = await axios.get(fullURL);
                 const result = response.data.result;
-                // console.log(result);
+                console.log(result);
                 setItem(result);
             } catch (error) {
                 console.error('Error getting itemType data:', error);

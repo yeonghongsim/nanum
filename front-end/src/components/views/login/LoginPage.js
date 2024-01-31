@@ -140,8 +140,9 @@ export default function LoginPage() {
                         phoneNumber: data.result.phoneNumber,
                         profileImgURL: data.result.profileImgURL,
                         profileImgName: data.result.profileImgName,
+                        itemIdList: data.result.itemIdList,
                     }
-                    console.log(userInfo);
+                    // console.log(userInfo);
                     // store에 저장
                     store.dispatch(setUser(userInfo));
                     // 페이지 이동

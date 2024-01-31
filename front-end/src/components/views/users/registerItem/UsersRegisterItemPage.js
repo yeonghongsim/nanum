@@ -249,6 +249,7 @@ export default function UsersRegisterItemPage() {
             userId: userInfo._id,
             phoneNumber: userInfo.phoneNumber,
             isShared: 'false',
+            likedUserId: [],
         };
         // 저장한 데이터 세팅
         setPreparedData(data);

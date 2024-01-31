@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { COLORS } from "../../../commons/styles/COLORS";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { setUser } from "../../../commons/store/userSlice";
+import store from "../../../commons/store/store";
 
 const CardContainer = styled.div`
     width: 24rem;
@@ -133,19 +136,19 @@ const LikeWrapper = styled.div`
 const LikeBtn = styled.div`
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: ${(props) => (props.isLiked === 'liked' ? COLORS.likeColor : 'white')};
     transform: rotate(45deg);
     // transition: all 0.8s;
     position: relative;
     border-bottom: 2px solid ${COLORS.middlegrayColor};
     border-right: 2px solid ${COLORS.middlegrayColor};
-    opacity: 0.7;
+    opacity: 0.85;
     &::before{
         content: "";
         width: 50%;
         height: 93.5%;
         left: -45%;
-        background-color: white;
+        background-color: ${(props) => (props.isLiked === 'liked' ? COLORS.likeColor : 'white')};
         position: absolute;
         border-radius: 3rem 0 0 3rem;
         border-top: 2px solid ${COLORS.middlegrayColor};
@@ -158,7 +161,7 @@ const LikeBtn = styled.div`
         width: 93.5%;
         height: 50%;
         top: -45%;
-        background-color: white;
+        background-color: ${(props) => (props.isLiked === 'liked' ? COLORS.likeColor : 'white')};
         position: absolute;
         border-radius: 3rem 3rem 0 0;
         border-top: 2px solid ${COLORS.middlegrayColor};
@@ -168,20 +171,22 @@ const LikeBtn = styled.div`
     }
     &:hover {
         cursor: pointer;
-        background-color: ${COLORS.likeColor};
+        // background-color: ${COLORS.likeColor};
         opacity: 1;
     }
     &:hover:after {
         cursor: pointer;
-        background-color: ${COLORS.likeColor};
+        // background-color: ${COLORS.likeColor};
     }
     &:hover:before {
         cursor: pointer;
-        background-color: ${COLORS.likeColor};
+        // background-color: ${COLORS.likeColor};
     }
 `;
 
 export default function HomePageItemListCard({ item, isLogin, ...props }) {
+    // 사용자 정보 조회
+    const userInfo = useSelector((state) => state.user.user);
     const navigate = useNavigate();
     // 현재 이미지의 index
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -202,8 +207,111 @@ export default function HomePageItemListCard({ item, isLogin, ...props }) {
     };
     // 해당 아이템 위시리스트에 추가
     const handleLikeToggle = () => {
-        alert(1111);
+        const isLiked = userInfo.itemIdList.find(element => element === item._id);
+        if (!isLiked) {
+            // 좋아요 안 한 상태
+            const copyArray = [...userInfo.itemIdList];
+            copyArray.push(item._id);
+            handleLike(copyArray);
+        } else {
+            // 좋아요 한 상태
+            const copyArray = [...userInfo.itemIdList];
+            const removedArray = copyArray.filter(value => value !== item._id);
+            handleLike(removedArray);
+        }
     };
+    // 좋아요 로직
+    const handleLike = async (likedArray) => {
+        try {
+            const userObjectId = userInfo._id;
+            // 데이터 저장 통
+            const data = {
+                itemIdList: likedArray,
+            };
+            // 변경 사항 업데이트 통신 시작
+            const fetchUrl = `http://localhost:8080/users/${userObjectId}/toggleLiked`;
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 기타 필요한 헤더 설정 가능
+                },
+                body: JSON.stringify(data),
+            };
+            // fetch
+            const response = await fetch(fetchUrl, requestOptions);
+            const responseData = await response.json();
+            // 업데이트 성공 후 로직 코드 예정
+            const updatedUser = {
+                _id: responseData.updatedUser._id,
+                userId: responseData.updatedUser.userId,
+                userName: responseData.updatedUser.userName,
+                birthday: responseData.updatedUser.birthday,
+                phoneNumber: responseData.updatedUser.phoneNumber,
+                profileImgURL: responseData.updatedUser.profileImgURL,
+                profileImgName: responseData.updatedUser.profileImgName,
+                itemIdList: responseData.updatedUser.itemIdList,
+            };
+            // store에 저장
+            store.dispatch(setUser(updatedUser));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        // const userObjectId = userInfo._id;
+        // // 데이터 저장 통
+        // const data = {
+        //     itemIdList: likedArray,
+        // }
+        // // // -- 변경 사항 업데이트 통신 시작
+        // // // 통신 url
+        // const fetchUrl = `http://localhost:8080/users/${userObjectId}/toggleLiked`;
+        // // method, headers, body,
+        // const requestOptions = {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // 기타 필요한 헤더 설정 가능
+        //     },
+        //     body: JSON.stringify(data),
+        // };
+        // // fetch
+        // fetch(fetchUrl, requestOptions)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         // console.log('Response:', data);
+        //         // 업데이트 성공 후 로직 코드 예정
+        //         // console.log('Response:', data.updatedUser);
+        //         // 데이터 셋업
+        //         const updatedUser = {
+        //             _id: data.updatedUser._id,
+        //             userId: data.updatedUser.userId,
+        //             userName: data.updatedUser.userName,
+        //             birthday: data.updatedUser.birthday,
+        //             phoneNumber: data.updatedUser.phoneNumber,
+        //             profileImgURL: data.updatedUser.profileImgURL,
+        //             profileImgName: data.updatedUser.profileImgName,
+        //             itemIdList: data.updatedUser.itemIdList,
+        //         }
+        //         // // store에 저장
+        //         store.dispatch(setUser(updatedUser));
+        //     })
+        //     .catch(error => console.error('Error:', error));
+    };
+    const [isLiked, setIsLiked] = useState();
+    useEffect(() => {
+        // 1. userInfo.itemIdList 체크.
+        const userItemIdList = userInfo?.itemIdList || [];
+        // 2. item._id 체크.
+        const itemId = item?._id;
+        // 3. 1의 리스트 중 2의 값을 갖고 있는 지 체크.
+        const isItemInList = userItemIdList.includes(itemId);
+        // 4. 3의 경우에 따라 갖고 있는 경우 console.log(1), 아닌 경우 console.log(2)
+        if (isItemInList) {
+            setIsLiked('unLiked')
+        } else {
+            setIsLiked('liked')
+        }
+    }, [userInfo?.itemIdList, item?._id]);
 
     return (
         <CardContainer key={item._id}>
@@ -239,11 +347,15 @@ export default function HomePageItemListCard({ item, isLogin, ...props }) {
                 <TextCardName>{item.itemName}</TextCardName>
                 <TextCardAddress>{item.locate}</TextCardAddress>
             </CardInfoContainer>
-            <LikeWrapper isOn={isLogin}>
-                <LikeBtn
-                    onClick={handleLikeToggle}
-                ></LikeBtn>
-            </LikeWrapper>
+            {
+                userInfo?._id !== item?.userId ?
+                    <LikeWrapper isOn={isLogin}>
+                        <LikeBtn
+                            onClick={handleLikeToggle}
+                            isLiked={isLiked}
+                        ></LikeBtn>
+                    </LikeWrapper> : null
+            }
         </CardContainer>
     )
 }

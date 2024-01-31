@@ -193,6 +193,7 @@ export default function SignUpPage() {
                 phoneNumber: phoneNumber,
                 profileImgURL: null,
                 profileImgName: null,
+                itemIdList: [],
             };
             // setPrepareData(data);
             handleSignUp(data);

@@ -16,7 +16,7 @@ const ItemListContainer = styled.div`
 export default function HomePageItemListCardContainer({ itemList, ...props }) {
     // 사용자 정보 조회
     const userInfo = useSelector((state) => state.user.user);
-    console.log(userInfo);
+    // console.log(userInfo);
     let isLogin;
     if (userInfo === null) {
         isLogin = false;

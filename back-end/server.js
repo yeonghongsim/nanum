@@ -76,6 +76,7 @@ app.post('/signUp', async function (req, res) {
             phoneNumber: req.body.phoneNumber,
             profileImgURL: req.body.profileImgURL,
             profileImgName: req.body.prifileImgName,
+            itemIdList: req.body.itemIdList,
         }, function (error, result) {
             if (error) {
                 console.error('Error inserting data into the database:', error);
@@ -152,6 +153,7 @@ app.post('/users/registerItem', async function (req, res) {
             userId: req.body.userId,
             phoneNumber: req.body.phoneNumber,
             isShared: req.body.isShared,
+            likedUserId: req.body.likedUserId,
         }, function (error, result) {
             if (error) {
                 console.error('Error inserting data into the database:', error);
@@ -310,5 +312,48 @@ app.delete('/deleteItem/:itemId', async function (req, res) {
     }
     finally {
         console.log('delete item fetch end');
+    }
+});
+// 회원 좋아요 정보 수정
+app.post('/users/:userId/toggleLiked', async function (req, res) {
+    try {
+        console.log('Received a toggleLike request from the front end.');
+        const userId = req.params.userId;
+        console.log(userId);
+        const data = {
+            itemIdList: req.body.itemIdList,
+        };
+        // 여기에서 데이터베이스 업데이트 로직을 추가
+        const result = await db.collection('users').updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: data }
+        );
+        // 업데이트된 정보 확인 및 로깅
+        console.log('Matched ' + result.matchedCount + ' document(s) and modified ' + result.modifiedCount + ' document(s)');
+        // 회원 정보 수정을 위한 재 조회 및 전달
+        if (result.modifiedCount === 1) {
+            console.log('User profile updated successfully.');
+            // 업데이트 후 해당 사용자 정보를 다시 조회
+            const user = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+            const updatedUser = {
+                _id: user._id,
+                userId: user.userId,
+                userName: user.userName,
+                birthday: user.birthday,
+                phoneNumber: user.phoneNumber,
+                profileImgURL: user.profileImgURL,
+                profileImgName: user.profileImgName,
+                itemIdList: user.itemIdList,
+            }
+            // 업데이트된 사용자 정보를 클라이언트에게 반환
+            res.status(200).json({ message: 'Success', updatedUser });
+        } else {
+            console.error('User profile not updated.');
+            res.status(500).json({ message: 'Failed to update user profile' });
+        }
+    }
+    catch (error) {
+        console.error('Error processing updateProfile request:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
